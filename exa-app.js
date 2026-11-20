@@ -610,20 +610,6 @@ async function doLogin(){
   const errEl = $('#login-err');
   if(!idVal || !pass){ errEl.textContent='Preencha o NIF e a palavra-passe.'; return; }
   errEl.textContent='A verificar…';
-  if(idVal.replace(/\D/g,'')==='999999999' && pass==='exa2026'){ entrarLivre(); prepArea(); return; }
-  if(false){
-    S.account = JSON.parse(JSON.stringify(demoAccount));
-    S.policies = seedPolicies();
-    S.points = 30;
-    S.invites = JSON.parse(JSON.stringify(demoInvites));
-    S.investList = [{ ativo:true, produto:'Maximus Poupança', valor:612.4, desde:'2026-01-10' },{ ativo:true, produto:'PPR+ tradicional', valor:1480, desde:'2025-03-15' }];
-    S.investReal = S.investList[0];
-    S.empresaLoaded = true;
-    errEl.textContent='';
-    S.loggedIn = true; save();
-    nav('home', {replace:true}); stack = ['home'];
-    return;
-  }
   if(window.EXASupabase){
     let res;
     try {
@@ -642,14 +628,6 @@ async function doLogin(){
       return;
     }
     if(res.offline){ errEl.textContent = res.error; return; }
-  }
-  if(idVal.toLowerCase() === S.account.email.toLowerCase() && pass === S.account.password){
-    errEl.textContent='';
-    S.loggedIn = true; save();
-    nav('home', {replace:true});
-    stack = ['home'];
-    prepArea();
-    return;
   }
   errEl.textContent='Credenciais inválidas.';
 }
