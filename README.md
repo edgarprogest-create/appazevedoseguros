@@ -30,6 +30,7 @@ Scripts corridos em produção (20/11/2026), por cima dos originais 1–3, 6 e 7
   limite de tentativas.
 - `supabase/9-passo-invest-seguro.sql` — EXA Invest (substitui os passos 4 e 5 originais).
 - `supabase/10-passo-notificacoes-push.sql` — notificações com a app fechada (ver Notificações).
+- `supabase/11-passo-notificacoes-visitantes.sql` — notificações para quem ainda não é cliente.
 
 **Não voltar a correr os scripts originais 1 a 5** (repõem funções sem proteção). Se acontecer, correr o 8 e o 9 a seguir.
 
@@ -59,6 +60,12 @@ preenchido pela app no registo — não editar à mão.
   existem (404/410). Usa `SUPABASE_DB_URL`; as chaves VAPID são criadas na 1.ª chamada e guardadas em
   `push_config` (RLS, sem acesso pela API). A app regista o telemóvel em `push_subscricoes` via
   `guardar_push` após login / ao mudar preferências e apaga-o ao terminar sessão (`apagar_push`).
+- **Visitantes (ainda não clientes):** ao abrir a app, um painel pede para ativar notificações (volta a perguntar
+  após 7 dias se a pessoa disser "Agora não"). O telemóvel fica em `push_subscricoes` com `auth_id` nulo
+  (`guardar_push_visitante`, só aceita serviços de push reais), recebe logo a mensagem do dia 0 e depois as
+  restantes de `push_mensagens_visitantes` (editável no Table Editor: dia, título, corpo, url, ativo; um link
+  wa.me abre o WhatsApp). Ao entrar com conta, o registo passa a cliente e a sequência pára
+  (`supabase/11-passo-notificacoes-visitantes.sql`).
 - Teste no SQL Editor: `select public.chamar_enviar_avisos('{"acao":"teste","nif":"123456789"}');` e
   ver a resposta em `select * from net._http_response order by id desc limit 1;`
 - **Com a app aberta:** se o push do servidor não estiver ativo no telemóvel, a app mostra os mesmos avisos

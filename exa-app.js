@@ -274,6 +274,56 @@ function ativarPush(){
   })();
   return pushEmCurso;
 }
+/* ---------- Visitantes (ainda não clientes): pedir notificações ao abrir a app ---------- */
+const PEDIDO_NOTIF_K = 'exa_pedido_notif';
+function podePedirNotif(){
+  if(!('Notification' in window) || !('PushManager' in window) || !('serviceWorker' in navigator)) return false;
+  if(Notification.permission !== 'default') return false;
+  if(S.loggedIn && !S.demo) return false;               // clientes: pedido no Perfil / ao ativar avisos
+  let ult = 0; try{ ult = +localStorage.getItem(PEDIDO_NOTIF_K) || 0; }catch(e){}
+  return Date.now() - ult > 7*86400000;                  // "Agora não" → volta a perguntar daqui a 7 dias
+}
+function convidarNotificacoes(){
+  if(!podePedirNotif()) return;
+  if(document.querySelector('.sheet-wrap.open')) { setTimeout(convidarNotificacoes, 4000); return; }
+  openSheet('sh-notif-visitante');
+}
+async function boasVindasLocal(){
+  const reg = await swPronto(5000);
+  try{
+    if(reg && reg.showNotification) await reg.showNotification('Bem-vindo à EXA Seguros', { body:'Instalou a app EXA Seguros. Para simular o melhor seguro para si, entre em contacto connosco e tenha o controlo de todos os seus seguros num só sítio.', icon:'icon-192.png', badge:'icon-192.png', tag:'visit-bemvindo', data:{ url:'./' } });
+    else new Notification('Bem-vindo à EXA Seguros', { body:'Instalou a app EXA Seguros. Para simular o melhor seguro para si, entre em contacto connosco.', icon:'icon-192.png' });
+  }catch(e){}
+}
+async function ativarNotifVisitante(){
+  try{ localStorage.setItem(PEDIDO_NOTIF_K, String(Date.now())); }catch(e){}
+  closeSheet('sh-notif-visitante');
+  if(!('Notification' in window)) return;
+  const perm = Notification.permission === 'default' ? await Notification.requestPermission() : Notification.permission;
+  estadoPermNotif();
+  if(perm !== 'granted'){ toast('Pode ativar mais tarde nas definições do telemóvel'); return; }
+  // cliente com sessão: avisos normais
+  if(window.EXASupabase && !S.demo && await window.EXASupabase.temSessao()){ ativarPush(); return; }
+  let ok = false;
+  try{
+    const reg = await swPronto(8000);
+    const chave = reg && reg.pushManager && window.EXASupabase ? await window.EXASupabase.pushChave() : null;
+    if(chave){
+      let sub = await reg.pushManager.getSubscription();
+      if(sub && S.pushChave && S.pushChave !== chave){ try{ await sub.unsubscribe(); }catch(e){} sub = null; }
+      if(!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly:true, applicationServerKey:b64uParaBytes(chave) });
+      const r = await window.EXASupabase.guardarPushVisitante(sub);
+      ok = !!r.ok;
+      if(ok){ S.pushChave = chave; S.pushVisitante = (sub.toJSON ? sub.toJSON() : sub).endpoint; save(); }
+    }
+  }catch(e){ ok = false; }
+  if(!ok) boasVindasLocal();                              // servidor indisponível: boas-vindas local
+  toast('Notificações ativas');
+}
+function recusarNotifVisitante(){
+  try{ localStorage.setItem(PEDIDO_NOTIF_K, String(Date.now())); }catch(e){}
+  closeSheet('sh-notif-visitante');
+}
 async function desativarPush(){
   const ep = S.pushEndpoint;
   S.pushAtivo = false; S.pushEndpoint = null; save();
@@ -1943,6 +1993,8 @@ function runAct(a, t){
   else if(a==='register') doRegister();
   else if(a==='recuperar-pass') doRecuperarPassword();
   else if(a==='recuperar-enviar') doRecuperarEnviar();
+  else if(a==='notif-vis-sim') ativarNotifVisitante();
+  else if(a==='notif-vis-nao') recusarNotifVisitante();
   else if(a==='nova-pass') doNovaPass();
   else if(a==='abrir-nova-pass') abrirNovaPass(false);
   else if(a==='skip-intro') skipIntro();
@@ -2116,6 +2168,7 @@ function init(){
   }
 }
 document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', ()=>setTimeout(convidarNotificacoes, 3500));
 // link de recuperação de palavra-passe (email do Supabase) → pedir a nova palavra-passe
 if(window.EXASupabase && window.EXASupabase.aoRecuperar) window.EXASupabase.aoRecuperar(()=>abrirNovaPass(true));
 

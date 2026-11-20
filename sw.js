@@ -1,4 +1,4 @@
-const CACHE = 'exa-seguros-v6';
+const CACHE = 'exa-seguros-v7';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
@@ -31,6 +31,11 @@ self.addEventListener('fetch', e => {
 self.addEventListener('notificationclick', e => {
   e.notification.close();
   const alvo = new URL((e.notification.data && e.notification.data.url) || './', self.registration.scope).href;
+  // link externo (ex.: WhatsApp do gestor): abre diretamente
+  if (!alvo.startsWith(self.registration.scope)) {
+    e.waitUntil(self.clients.openWindow ? self.clients.openWindow(alvo) : Promise.resolve());
+    return;
+  }
   e.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(cs => {
       for (const c of cs) { if (c.url.startsWith(self.registration.scope) && 'focus' in c) return c.focus(); }
