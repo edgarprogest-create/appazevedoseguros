@@ -235,7 +235,7 @@ function refNotifItems(){
    não é permitido: tem de ser o service worker a mostrar. */
 function notifOn(k){ return !S.notifications || S.notifications[k] !== false; }
 function notificar(titulo, opts){
-  if(S.demo || !('Notification' in window) || Notification.permission!=='granted') return;
+  if(S.demo || S.pushAtivo || pushEmCurso || !('Notification' in window) || Notification.permission!=='granted') return;
   opts = Object.assign({ icon:'icon-192.png', badge:'icon-192.png', data:{ url:'./' } }, opts||{});
   const direto = ()=>{ try{ new Notification(titulo, opts); }catch(e){} };
   if('serviceWorker' in navigator && navigator.serviceWorker.getRegistration){
@@ -244,15 +244,55 @@ function notificar(titulo, opts){
     }).catch(direto);
   } else direto();
 }
+/* ---------- Notificações com a app fechada (Web Push via Supabase) ---------- */
+function b64uParaBytes(b64){
+  const pad = '='.repeat((4 - b64.length % 4) % 4);
+  const raw = atob((b64 + pad).replace(/-/g,'+').replace(/_/g,'/'));
+  return Uint8Array.from(raw, c=>c.charCodeAt(0));
+}
+function swPronto(ms){
+  if(!('serviceWorker' in navigator)) return Promise.resolve(null);
+  return Promise.race([ navigator.serviceWorker.ready, new Promise(r=>setTimeout(()=>r(null), ms||8000)) ]);
+}
+let pushEmCurso = null;
+function ativarPush(){
+  if(pushEmCurso) return pushEmCurso;
+  pushEmCurso = (async ()=>{
+    try{
+      if(S.demo || !window.EXASupabase || !('PushManager' in window) || !('Notification' in window) || Notification.permission!=='granted') return false;
+      if(!(await window.EXASupabase.temSessao())) return false;
+      const reg = await swPronto(8000); if(!reg || !reg.pushManager) return false;
+      const chave = await window.EXASupabase.pushChave(); if(!chave) return false;
+      let sub = await reg.pushManager.getSubscription();
+      if(sub && S.pushChave && S.pushChave !== chave){ try{ await sub.unsubscribe(); }catch(e){} sub = null; }
+      if(!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly:true, applicationServerKey:b64uParaBytes(chave) });
+      const r = await window.EXASupabase.guardarPush(sub, S.notifications || {});
+      S.pushAtivo = !!r.ok; S.pushChave = chave; S.pushEndpoint = (sub.toJSON ? sub.toJSON() : sub).endpoint; save();
+      return S.pushAtivo;
+    }catch(e){ return false; }
+    finally{ pushEmCurso = null; }
+  })();
+  return pushEmCurso;
+}
+async function desativarPush(){
+  const ep = S.pushEndpoint;
+  S.pushAtivo = false; S.pushEndpoint = null; save();
+  try{
+    if(ep && window.EXASupabase) await window.EXASupabase.apagarPush(ep);
+    const reg = await swPronto(3000);
+    const sub = reg && reg.pushManager ? await reg.pushManager.getSubscription() : null;
+    if(sub) await sub.unsubscribe();
+  }catch(e){}
+}
 function pedirPermissaoNotif(){
   if(!('Notification' in window) || Notification.permission!=='default') return Promise.resolve(window.Notification ? Notification.permission : 'denied');
-  return Notification.requestPermission().then(r=>{ estadoPermNotif(); if(r==='granted') renderNotifs(); return r; });
+  return Notification.requestPermission().then(r=>{ estadoPermNotif(); if(r==='granted'){ renderNotifs(); ativarPush(); } return r; });
 }
 function estadoPermNotif(){
   const el = document.getElementById('notif-perm'); if(!el) return;
   if(!('Notification' in window)) { el.textContent='Este dispositivo não suporta notificações. Os avisos aparecem no sino da app.'; return; }
   const p = Notification.permission;
-  el.textContent = p==='granted' ? 'Notificações ativas neste dispositivo. Os avisos são verificados sempre que abre a app.'
+  el.textContent = p==='granted' ? (S.pushAtivo ? 'Notificações ativas neste dispositivo, mesmo com a app fechada.' : 'Notificações ativas neste dispositivo. Os avisos são verificados sempre que abre a app.')
     : p==='denied' ? 'As notificações estão bloqueadas. Ative-as nas definições do telemóvel (Apps → EXA Seguros → Notificações).'
     : 'Ao ativar um aviso, o telemóvel pede autorização para mostrar notificações.';
 }
@@ -509,6 +549,7 @@ async function restaurarSessao(){
     const res = await window.EXASupabase.restaurarSessao();
     if(!res.ok) return false;
     S.demo=false;
+    ativarPush();
     aplicarCliente(res);
     await loadReferrals();
     return true;
@@ -619,6 +660,7 @@ async function doLogin(){
       return;
     }
     if(res.ok){
+      ativarPush();
       aplicarCliente(res);
       errEl.textContent='';
       await loadReferrals();
@@ -789,7 +831,7 @@ async function doNovaPass(){
 function logout(){
   S.showEmpresa = null;
   document.body.classList.remove('is-demo');
-  if(window.EXASupabase) window.EXASupabase.signOut();
+  if(window.EXASupabase){ const sair = ()=>window.EXASupabase.signOut(); desativarPush().then(sair, sair); }
   S.demo=false;
   S.loggedIn=false;
   S.policies = { particular:[], empresa:[] };
@@ -1727,6 +1769,7 @@ function toggleNotif(el){
   S.notifications[key] = el.dataset.on==='1'; save();
   if(el.dataset.on==='1') pedirPermissaoNotif();
   renderNotifs();
+  ativarPush().then(estadoPermNotif);
 }
 function fmtDate(iso){
   const d = new Date(iso+'T00:00:00'); if(isNaN(d)) return iso;

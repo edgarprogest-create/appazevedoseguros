@@ -326,5 +326,27 @@
     return r.data;
   }
 
-  window.EXASupabase = { rentabilidade:rentabilidade, login:login, restaurarSessao:restaurarSessao, signOut:function(){ return sb ? sb.auth.signOut() : null; }, loginEmpresa:loginEmpresa, empresaApolices:empresaApolices, alterarPassword:alterarPassword, aoRecuperar:aoRecuperar, verificarRegisto:verificarRegisto, criarConta:criarConta, recuperarPassword:recuperarPassword, renovacoes:renovacoes, meuCodigo:meuCodigo, donoDoCodigo:donoDoCodigo, criarConvidado:criarConvidado, convitesDoCliente:convitesDoCliente, pontosDoCliente:pontosDoCliente, convitesTodos:convitesTodos, registarResgate:registarResgate, investimentoDoCliente:investimentoDoCliente, investimentosDoCliente:investimentosDoCliente, pedirReforco:pedirReforco, reforcosDoCliente:reforcosDoCliente, mapApolice:mapApolice };
+  // ---------- Notificações com a app fechada (Web Push) ----------
+  async function pushChave(){
+    if(!sb) return null;
+    var r = await sb.rpc('push_chave_publica');
+    return (r.error || !r.data) ? null : r.data;
+  }
+  async function guardarPush(sub, prefs){
+    if(!sb || !sub) return { ok:false };
+    var j = sub.toJSON ? sub.toJSON() : sub;
+    if(!j || !j.endpoint || !j.keys) return { ok:false };
+    var r = await sb.rpc('guardar_push', { p_endpoint:j.endpoint, p_p256dh:j.keys.p256dh, p_auth:j.keys.auth, p_prefs:prefs||{}, p_ua:(navigator.userAgent||'').slice(0,200) });
+    return { ok: !r.error && r.data === true };
+  }
+  async function apagarPush(endpoint){
+    if(!sb || !endpoint) return;
+    try{ await sb.rpc('apagar_push', { p_endpoint:endpoint }); }catch(e){}
+  }
+  async function temSessao(){
+    if(!sb) return false;
+    try{ var s = await sb.auth.getSession(); return !!(s.data && s.data.session); }catch(e){ return false; }
+  }
+
+  window.EXASupabase = { pushChave:pushChave, guardarPush:guardarPush, apagarPush:apagarPush, temSessao:temSessao, rentabilidade:rentabilidade, login:login, restaurarSessao:restaurarSessao, signOut:function(){ return sb ? sb.auth.signOut() : null; }, loginEmpresa:loginEmpresa, empresaApolices:empresaApolices, alterarPassword:alterarPassword, aoRecuperar:aoRecuperar, verificarRegisto:verificarRegisto, criarConta:criarConta, recuperarPassword:recuperarPassword, renovacoes:renovacoes, meuCodigo:meuCodigo, donoDoCodigo:donoDoCodigo, criarConvidado:criarConvidado, convitesDoCliente:convitesDoCliente, pontosDoCliente:pontosDoCliente, convitesTodos:convitesTodos, registarResgate:registarResgate, investimentoDoCliente:investimentoDoCliente, investimentosDoCliente:investimentosDoCliente, pedirReforco:pedirReforco, reforcosDoCliente:reforcosDoCliente, mapApolice:mapApolice };
 })();

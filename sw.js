@@ -1,4 +1,4 @@
-const CACHE = 'exa-seguros-v5';
+const CACHE = 'exa-seguros-v6';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
@@ -37,4 +37,17 @@ self.addEventListener('notificationclick', e => {
       return self.clients.openWindow ? self.clients.openWindow(alvo) : null;
     })
   );
+});
+
+// Notificações enviadas pelo servidor (Supabase → enviar-avisos), mesmo com a app fechada
+self.addEventListener('push', e => {
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch (_) { d = { body: e.data ? e.data.text() : '' }; }
+  e.waitUntil(self.registration.showNotification(d.title || 'EXA Seguros', {
+    body: d.body || '',
+    tag: d.tag || undefined,
+    icon: 'icon-192.png',
+    badge: 'icon-192.png',
+    data: { url: d.url || './' }
+  }));
 });

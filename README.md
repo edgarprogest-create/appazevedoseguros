@@ -21,7 +21,7 @@ Ao alterar CSS/JS, subir também o `?v=` correspondente no `index.html`.
 Projeto `hbyavmpefqlwaoileduc`. A chave em `exa-supabase.js` é a **anon key** (pública por natureza).
 A segurança está nas funções e no RLS, não na chave.
 
-Scripts já corridos em produção (20/11/2026), por cima dos originais 1–3, 6 e 7:
+Scripts corridos em produção (20/11/2026), por cima dos originais 1–3, 6 e 7 (o 10 exige antes criar a Edge Function):
 - `supabase/8-passo-seguranca.sql` — RLS em `clientes`, `apolices`, `resgates`, `invest_reforcos`,
   `import_*`, `agentes`; funções por NIF só para o próprio cliente autenticado (versões originais em
   esquema `interno`, fora da API); funções do painel do agente só para quem está em `agentes`;
@@ -29,6 +29,7 @@ Scripts já corridos em produção (20/11/2026), por cima dos originais 1–3, 6
   palavra-passe certa); área Empresa com `clientes.codigo_empresa` verificado no servidor;
   limite de tentativas.
 - `supabase/9-passo-invest-seguro.sql` — EXA Invest (substitui os passos 4 e 5 originais).
+- `supabase/10-passo-notificacoes-push.sql` — notificações com a app fechada (ver Notificações).
 
 **Não voltar a correr os scripts originais 1 a 5** (repõem funções sem proteção). Se acontecer, correr o 8 e o 9 a seguir.
 
@@ -51,10 +52,19 @@ renovação a 60 dias); `data_inicio` + `fracionamento` (aviso de pagamento 3 di
 preenchido pela app no registo — não editar à mão.
 
 ## Notificações
-Mostradas pelo service worker (`registration.showNotification`; no Android `new Notification()` não é
-permitido). O cliente escolhe no Perfil: renovações, pagamentos, check-up de saúde, dicas da época.
-Funcionam quando a app é aberta. **Por fazer:** push com a app fechada (FCM ou OneSignal + tarefa
-diária no Supabase via pg_cron/Edge Function).
+- **Com a app fechada (Web Push):** Edge Function `supabase/functions/enviar-avisos/index.ts`, chamada todos os
+  dias às 09:00 UTC pelo pg_cron (`supabase/10-passo-notificacoes-push.sql`). Envia renovações (60/30/7/1 dias),
+  pagamentos (3 dias antes do débito), check-up de saúde (6 em 6 meses) e dica da época (1 por estação),
+  segundo as preferências do Perfil. Não repete (`push_enviados`) e apaga registos de telemóveis que já não
+  existem (404/410). Usa `SUPABASE_DB_URL`; as chaves VAPID são criadas na 1.ª chamada e guardadas em
+  `push_config` (RLS, sem acesso pela API). A app regista o telemóvel em `push_subscricoes` via
+  `guardar_push` após login / ao mudar preferências e apaga-o ao terminar sessão (`apagar_push`).
+- Teste no SQL Editor: `select public.chamar_enviar_avisos('{"acao":"teste","nif":"123456789"}');` e
+  ver a resposta em `select * from net._http_response order by id desc limit 1;`
+- **Com a app aberta:** se o push do servidor não estiver ativo no telemóvel, a app mostra os mesmos avisos
+  localmente pelo service worker (`registration.showNotification`; no Android `new Notification()` não é permitido).
+- iPhone: só recebe com a app instalada no ecrã principal (iOS 16.4+). Play Store (TWA): ativar a delegação de
+  notificações no Bubblewrap/PWABuilder.
 
 ## Demonstração
 Códigos: `101010.EA` e Ordens `202020.OM` … `202026.OA` (`DEMO_ORDENS` em `exa-app.js`), ou `?demo=CÓDIGO` no URL.
@@ -65,7 +75,6 @@ Empacotar como TWA (PWABuilder ou Bubblewrap). Colocar o `assetlinks.json` gerad
 `.well-known/assetlinks.json` na raiz deste repositório (sem ele a app abre com barra do browser).
 
 ## Pendentes conhecidos
-- Push com a app fechada (ver acima).
 - Painel do agente (`EXA Agente.html`) não está neste repositório: passa a precisar de login Supabase com conta em `agentes`.
 - Confirmar licença das imagens `carro-xray.webp` e `casa.webp`; valores de exemplo do Check-up e do Ritmo Vida Profissional.
 - Registos de convidados são enviados por formsubmit.co para email — referir na política de privacidade.
