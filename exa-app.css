@@ -2211,3 +2211,29 @@ body.splash-side{background-size:100% 100%,100% 100%,cover,100% 100% !important;
 @media (prefers-reduced-motion: reduce){#prep-area *{animation-duration:.01s !important;animation-delay:0s !important;}}
 #prep-area .pa-ring{display:none !important;}
 #prep-area .pa-logo{margin-bottom:28px;}
+
+/* ===== Ajustes para telemóveis estreitos e letra grande (20/11/2026) ===== */
+.gestor-badge{flex-shrink:0;}
+/* Grau de Blindagem no meio cartão: anel + seta em cima, texto por baixo a toda a largura */
+.wallet-widgets #wgt-chips-container.dg-wgt-on{height:auto;margin-top:8px;}
+.wallet-widgets .dg-wgt{display:grid;grid-template-columns:auto 1fr;grid-template-areas:"anel seta" "txt txt";align-items:center;gap:8px;padding:10px;}
+.wallet-widgets .dg-mini{grid-area:anel;width:44px;height:44px;}
+.wallet-widgets .dg-wgt>i{grid-area:seta;justify-self:end;align-self:start;}
+.wallet-widgets .dg-wgt-t{grid-area:txt;}
+.wallet-widgets .dg-wgt-t b{font-size:13px;line-height:1.25;hyphens:auto;}
+.wallet-widgets .dg-wgt-t em{font-size:11px;line-height:1.3;}
+/* Cartões empilhados: o nome fica numa linha (com "…"), para não ser tapado pelo cartão seguinte */
+.wallet-stack:not(.fan) > .pol:has(+ .pol) .top > div:first-child{min-width:0;flex:1;}
+.wallet-stack:not(.fan) > .pol:has(+ .pol) .ttl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wallet-stack:not(.fan) > .pol:has(+ .pol) .top .meta{flex-shrink:0;}
+.wallet-widgets .dg-mini{width:50px;height:50px;}
+.wallet-widgets .dg-mini b{font-size:12px;}
+.wallet-widgets .dg-wgt-t b{hyphens:manual;}
+/* Cabeçalho da wallet: saudação numa linha; botão Investimento mais compacto em ecrãs estreitos */
+#s-home #greet-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+@media (max-width:380px){
+  #s-home [data-nav="invest-painel"]{padding:0 9px !important;gap:4px !important;letter-spacing:0.02em !important;font-size:9px !important;}
+  #s-home .bell-btn{width:36px !important;height:36px !important;}
+}
+/* Título dos cartões em 2 linhas: não cortar o "g"/"p" da segunda linha */
+.pol .ttl{line-height:1.12;max-height:none;padding-bottom:0.06em;}
