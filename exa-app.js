@@ -29,7 +29,7 @@ const defaultState = {
   loggedIn:false,
   policies: { particular:[], empresa:[] },
   empresaLoaded:false,
-  notifications:{ updates:true, renovacao:true, pagamentos:true, novidades:false, mensagens:true, faceId:true },
+  notifications:{ updates:true, renovacao:true, pagamentos:true, checkup:true, sazonal:true },
   points:0,
   invites:[],
   prizeStore:'pingo',
@@ -231,11 +231,36 @@ function refNotifItems(){
   return out;
 }
 
+/* Notificações do sistema. No Android (Chrome e app da Play Store) "new Notification()"
+   não é permitido: tem de ser o service worker a mostrar. */
+function notifOn(k){ return !S.notifications || S.notifications[k] !== false; }
+function notificar(titulo, opts){
+  if(S.demo || !('Notification' in window) || Notification.permission!=='granted') return;
+  opts = Object.assign({ icon:'icon-192.png', badge:'icon-192.png', data:{ url:'./' } }, opts||{});
+  const direto = ()=>{ try{ new Notification(titulo, opts); }catch(e){} };
+  if('serviceWorker' in navigator && navigator.serviceWorker.getRegistration){
+    navigator.serviceWorker.getRegistration().then(reg=>{
+      if(reg && reg.showNotification) reg.showNotification(titulo, opts).catch(direto); else direto();
+    }).catch(direto);
+  } else direto();
+}
+function pedirPermissaoNotif(){
+  if(!('Notification' in window) || Notification.permission!=='default') return Promise.resolve(window.Notification ? Notification.permission : 'denied');
+  return Notification.requestPermission().then(r=>{ estadoPermNotif(); if(r==='granted') renderNotifs(); return r; });
+}
+function estadoPermNotif(){
+  const el = document.getElementById('notif-perm'); if(!el) return;
+  if(!('Notification' in window)) { el.textContent='Este dispositivo não suporta notificações. Os avisos aparecem no sino da app.'; return; }
+  const p = Notification.permission;
+  el.textContent = p==='granted' ? 'Notificações ativas neste dispositivo. Os avisos são verificados sempre que abre a app.'
+    : p==='denied' ? 'As notificações estão bloqueadas. Ative-as nas definições do telemóvel (Apps → EXA Seguros → Notificações).'
+    : 'Ao ativar um aviso, o telemóvel pede autorização para mostrar notificações.';
+}
 function pushRenov(items){
   let sent={}; try{ sent=JSON.parse(localStorage.getItem('exa_renov_push')||'{}'); }catch(e){}
   const novos = items.filter(it=>!sent[(it.p.num||it.p.nome)+'|'+it.d.toISOString().slice(0,10)]);
-  if(!novos.length || !('Notification' in window)) return;
-  const fire = ()=>{ novos.forEach(it=>{ try{ new Notification('Renovação: '+(it.p.nome||it.p.ramo), { body:'A sua apólice renova a '+fmtDateShort(it.d)+' (dentro de '+it.days+' dias). Caso necessite de ajustar, alterar ou verificar as condições, contacte o seu gestor de seguros.', icon:'logo-ageas.png', tag:'renov-'+(it.p.num||it.p.nome) }); }catch(e){} sent[(it.p.num||it.p.nome)+'|'+it.d.toISOString().slice(0,10)]=1; }); try{ localStorage.setItem('exa_renov_push', JSON.stringify(sent)); }catch(e){} };
+  if(!novos.length || S.demo || !('Notification' in window)) return;
+  const fire = ()=>{ novos.forEach(it=>{ try{ notificar('Renovação: '+(it.p.nome||it.p.ramo), { body:'A sua apólice renova a '+fmtDateShort(it.d)+' (dentro de '+it.days+' dias). Caso necessite de ajustar, alterar ou verificar as condições, contacte o seu gestor de seguros.', icon:'logo-ageas.png', tag:'renov-'+(it.p.num||it.p.nome) }); }catch(e){} sent[(it.p.num||it.p.nome)+'|'+it.d.toISOString().slice(0,10)]=1; }); try{ localStorage.setItem('exa_renov_push', JSON.stringify(sent)); }catch(e){} };
   if(Notification.permission==='granted') fire();
   else if(Notification.permission==='default') Notification.requestPermission().then(r=>{ if(r==='granted') fire(); });
 }
@@ -247,6 +272,7 @@ const SEASONS = [
 ];
 function seasonNow(){ const m=new Date().getMonth(); return SEASONS.find(s=>s.meses.includes(m)); }
 function seasonItems(arr){
+  if(!notifOn('sazonal')) return [];
   const s = seasonNow(); if(!s) return [];
   const p = arr.find(p=>/sa[uú]de/i.test(p.ramo||'') && !/cancel|anula/i.test(p.situacao||'')); if(!p) return [];
   const k = s.id+'-'+new Date().getFullYear()+(s.id==='gripe' && new Date().getMonth()<2 ? '-'+(new Date().getFullYear()-1) : '');
@@ -255,11 +281,12 @@ function seasonItems(arr){
   const it = { kind:'season', p, s, k, d:new Date() };
   if(!S.demo && 'Notification' in window && Notification.permission==='granted'){
     let sent={}; try{ sent=JSON.parse(localStorage.getItem('exa_season_push')||'{}'); }catch(e){}
-    if(!sent[k]){ try{ new Notification(s.t, { body:s.m, icon:'logo-medis.png', tag:'season-'+s.id }); }catch(e){} sent[k]=1; try{ localStorage.setItem('exa_season_push', JSON.stringify(sent)); }catch(e){} }
+    if(!sent[k]){ notificar(s.t, { body:s.m, tag:'season-'+s.id }); sent[k]=1; try{ localStorage.setItem('exa_season_push', JSON.stringify(sent)); }catch(e){} }
   }
   return [it];
 }
 function checkupItems(arr){
+  if(!notifOn('checkup')) return [];
   const DAY=86400000, SIX=182*DAY, now=Date.now();
   let done={}; try{ done = S.demo ? (window.__demoCheckup||{}) : JSON.parse(localStorage.getItem('exa_checkup')||'{}'); }catch(e){}
   return arr.filter(p=>/sa[uú]de/i.test(p.ramo||'') && !/cancel|anula/i.test(p.situacao||'')).map(p=>{
@@ -271,10 +298,36 @@ function checkupItems(arr){
   }).filter(Boolean);
 }
 function pushCheckup(items){
-  if(!items.length || !('Notification' in window) || Notification.permission!=='granted') return;
+  if(!items.length || S.demo || !('Notification' in window) || Notification.permission!=='granted') return;
   let sent={}; try{ sent=JSON.parse(localStorage.getItem('exa_checkup_push')||'{}'); }catch(e){}
-  items.forEach(it=>{ const key=it.k+'|'+it.d.toISOString().slice(0,10); if(sent[key]) return; try{ new Notification('Está na altura do seu check-up', { body:'Passaram 6 meses. Marque uma consulta com o seu médico para confirmar que está tudo bem.', icon:'logo-medis.png', tag:'checkup-'+it.k }); }catch(e){} sent[key]=1; });
+  items.forEach(it=>{ const key=it.k+'|'+it.d.toISOString().slice(0,10); if(sent[key]) return; notificar('Está na altura do seu check-up', { body:'Passaram 6 meses. Marque uma consulta com o seu médico para confirmar que está tudo bem.', tag:'checkup-'+it.k }); sent[key]=1; });
   try{ localStorage.setItem('exa_checkup_push', JSON.stringify(sent)); }catch(e){}
+}
+function pagamentoItems(arr){
+  if(!notifOn('pagamentos')) return [];
+  const MESES = { mensal:1, trimestral:3, semestral:6, anual:12 };
+  const today = new Date(); today.setHours(0,0,0,0);
+  return arr.map(p=>{
+    if(/cancel|anula/i.test(p.situacao||'')) return null;
+    const frac = String(p.frac||'anual').toLowerCase(); const m = MESES[frac]; if(!m) return null;
+    let d = parseAnyDate(p.inicio) || parseAnyDate(p.renov || (p.extra && p.extra['Renovação'])); if(!d) return null;
+    d = new Date(d); let guard = 0;
+    while(d < today && guard++ < 1200) d.setMonth(d.getMonth()+m);
+    const days = Math.round((d - today)/86400000);
+    if(days < 0 || days > 3) return null;
+    const total = parsePremio(p.premio); const n = (FRAC[frac]||FRAC.anual).n;
+    const valor = total!=null ? fmtEuro(total/n) : '';
+    return { kind:'pay', p, d, days, valor, k:(p.num||p.nome)+'|'+d.toISOString().slice(0,10) };
+  }).filter(Boolean);
+}
+function pushPagamentos(items){
+  if(!items.length || S.demo || !('Notification' in window) || Notification.permission!=='granted') return;
+  let sent={}; try{ sent=JSON.parse(localStorage.getItem('exa_pay_push')||'{}'); }catch(e){}
+  items.forEach(it=>{ if(sent[it.k]) return;
+    notificar('Pagamento '+(it.days===0?'hoje':'em '+it.days+(it.days===1?' dia':' dias'))+': '+(it.p.nome||it.p.ramo),
+      { body:(it.valor?'Débito de '+it.valor+' a ':'Débito a ')+fmtDateShort(it.d)+'. Confirme que tem saldo na conta.', tag:'pay-'+(it.p.num||it.p.nome) });
+    sent[it.k]=1; });
+  try{ localStorage.setItem('exa_pay_push', JSON.stringify(sent)); }catch(e){}
 }
 function renderNotifs(){
   const list = $('#notifs-list'); if(!list) return;
@@ -290,11 +343,13 @@ function renderNotifs(){
     if(/cancel|anula/i.test(p.situacao||'')) return null;
     return { kind:'renov', p, d, days };
   }).filter(Boolean);
-  if(S.notifications.renovacao) pushRenov(items);
+  if(notifOn('renovacao')) pushRenov(items);
   const refs = refNotifItems();
   const checks = seasonItems(arr).concat(checkupItems(arr));
-  if(S.notifications.renovacao!==false) pushCheckup(checks);
-  const all = checks.concat(items.concat(refs).sort((a,b)=> b.d - a.d));
+  pushCheckup(checks.filter(it=>it.kind==='checkup'));
+  const pays = pagamentoItems(arr);
+  pushPagamentos(pays);
+  const all = checks.concat(pays, items.concat(refs).sort((a,b)=> b.d - a.d));
 
   list.innerHTML = all.length ? all.map((it,idx)=>{
     if(it.kind==='season'){
@@ -327,6 +382,13 @@ function renderNotifs(){
         +'</div>'
         +'<button type="button" data-act="checkup-done" data-k="'+esc(it.k)+'" style="margin-top:8px;width:100%;min-height:36px;border:none;background:none;font-family:var(--sans);font-size:12px;font-weight:600;color:var(--ink-2);cursor:pointer;">Já fiz a consulta</button>'
         +'</div>';
+    }
+    if(it.kind==='pay'){
+      return '<div style="padding:12px;border:1px solid var(--line);border-radius:14px;background:#fff;">'
+        +'<div style="display:flex;align-items:center;gap:12px;">'
+        +'<div style="width:36px;height:36px;border-radius:10px;background:var(--ink);color:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;">€</div>'
+        +'<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:var(--ink);line-height:1.35;">Pagamento '+(it.days===0?'hoje':'em '+it.days+(it.days===1?' dia':' dias'))+' · '+esc(it.p.nome||it.p.ramo)+'</div>'
+        +'<div style="font-family:var(--mono);font-size:10px;color:var(--ink-2);letter-spacing:0.05em;margin-top:3px;">'+(it.valor?esc(it.valor)+' · ':'')+fmtDateShort(it.d)+'</div></div></div></div>';
     }
     if(it.kind!=='renov'){
       const isRedeem = it.kind==='redeem';
@@ -371,7 +433,7 @@ function renderNotifs(){
   window.__notifItems = all;
 
   // badge count = renewals within 60 days + avisos de convites
-  const soon = items.filter(it=>it.days>=0 && it.days<=60).length + refs.length;
+  const soon = all.length;
   const badge = $('#bell-count');
   if(badge){
     badge.textContent = soon;
@@ -579,6 +641,7 @@ async function doLogin(){
       prepArea();
       return;
     }
+    if(res.offline){ errEl.textContent = res.error; return; }
   }
   if(idVal.toLowerCase() === S.account.email.toLowerCase() && pass === S.account.password){
     errEl.textContent='';
@@ -686,7 +749,7 @@ async function doRegister(){
   }
   let created;
   try {
-    created = await window.EXASupabase.criarConta(nif, pass, email);
+    created = await window.EXASupabase.criarConta(nif, pass, email, digitos);
   } catch(err){
     errEl.textContent='Não foi possível criar a conta. Tente novamente.';
     return;
@@ -703,22 +766,47 @@ function avisarAgenteNifDesconhecido(nif, email){
   const body = encodeURIComponent('Um cliente tentou registar-se na app e o NIF não consta na base de dados.\n\nNIF indicado: '+nif+(email?'\nEmail indicado: '+email:'')+'\n\nContactar para confirmar os dados.');
   window.location.href = 'mailto:edgarsegurosageas@gmail.com?cc=edgar.azevedo@private.ageas.pt&subject='+subject+'&body='+body;
 }
-async function doRecuperarPassword(){
-  const nif = ($('#login-email').value||'').trim();
-  const errEl = $('#login-err');
-  if(!nif){ errEl.textContent='Escreva o seu NIF primeiro.'; return; }
+function doRecuperarPassword(){
+  const v = ($('#login-email').value||'').trim();
+  const em = $('#rec-email'); if(em) em.value = v.indexOf('@')>0 ? v : '';
+  const err = $('#rec-err'); if(err) err.textContent='';
+  openSheet('sh-recuperar');
+}
+async function doRecuperarEnviar(){
+  const email = ($('#rec-email').value||'').trim();
+  const errEl = $('#rec-err');
+  if(email.indexOf('@')<1){ errEl.textContent='Indique o email da sua conta.'; return; }
   if(!window.EXASupabase){ errEl.textContent='Ligação indisponível.'; return; }
   errEl.textContent='A enviar…';
   let res;
-  try {
-    res = await window.EXASupabase.recuperarPassword(nif);
-  } catch(err){
-    errEl.textContent='Não foi possível enviar o email. Tente novamente.';
-    return;
-  }
+  try { res = await window.EXASupabase.recuperarPassword(email); }
+  catch(err){ errEl.textContent='Não foi possível enviar o email. Tente novamente.'; return; }
   if(!res.ok){ errEl.textContent=res.error; return; }
   errEl.textContent='';
-  toast('Email de recuperação enviado');
+  closeSheet('sh-recuperar');
+  toast('Se o email tiver conta, recebe um link para criar nova palavra-passe');
+}
+function abrirNovaPass(recuperacao){
+  if(S.demo){ toast('Indisponível na demonstração'); return; }
+  const sub = $('#np-sub');
+  if(sub) sub.textContent = recuperacao ? 'Escolha a nova palavra-passe da sua conta.' : 'Escolha uma nova palavra-passe (mínimo 8 caracteres).';
+  ['#np-pass','#np-pass2'].forEach(id=>{ const e=$(id); if(e) e.value=''; });
+  const err=$('#np-err'); if(err) err.textContent='';
+  openSheet('sh-nova-pass');
+}
+async function doNovaPass(){
+  const p1 = $('#np-pass').value, p2 = $('#np-pass2').value, errEl = $('#np-err');
+  if(!p1 || p1.length<8){ errEl.textContent='A palavra-passe deve ter pelo menos 8 caracteres.'; return; }
+  if(p1!==p2){ errEl.textContent='As palavras-passe não coincidem.'; return; }
+  if(!window.EXASupabase){ errEl.textContent='Ligação indisponível.'; return; }
+  errEl.textContent='A guardar…';
+  let res;
+  try { res = await window.EXASupabase.alterarPassword(p1); }
+  catch(e){ errEl.textContent='Não foi possível ligar. Tente novamente.'; return; }
+  if(!res.ok){ errEl.textContent=res.error; return; }
+  errEl.textContent='';
+  closeSheet('sh-nova-pass');
+  toast('Palavra-passe alterada');
 }
 function logout(){
   S.showEmpresa = null;
@@ -765,18 +853,24 @@ async function doEmpresaConfirm(){
   const subject = encodeURIComponent('Confirmar acesso Empresa — '+nome+' (NIF '+nif+')');
   const body = encodeURIComponent('Pedido de acesso à área Empresa.\nEmpresa: '+nome+'\nNIF: '+nif+'\nEmail indicado: '+email);
   window.location.href = 'mailto:edgar.azevedo@private.ageas.pt?subject='+subject+'&body='+body;
-  empresaPending = { nif:nif, nome:nome, apolices:res.apolices };
+  empresaPending = { nif:nif, nome:nome, email:email };
   errEl.textContent='';
   $('#emp-step1').style.display='none';
   $('#emp-step2').style.display='block';
   $('#emp-code-msg').textContent='O seu agente vai fornecer-lhe um código de acesso.';
 }
-function doEmpresaCodeVerify(){
+async function doEmpresaCodeVerify(){
   const code = ($('#emp-code').value||'').trim();
   const errEl = $('#emp-code-err');
   if(!empresaPending){ errEl.textContent='Confirme primeiro os dados.'; return; }
-  if(code !== '1917'){ errEl.textContent='Código inválido.'; return; }
-  S.policies.empresa = empresaPending.apolices;
+  if(!code){ errEl.textContent='Indique o código do seu agente.'; return; }
+  if(!window.EXASupabase){ errEl.textContent='Ligação indisponível.'; return; }
+  errEl.textContent='A verificar…';
+  let r;
+  try { r = await window.EXASupabase.empresaApolices(empresaPending.nif, empresaPending.email, code); }
+  catch(e){ errEl.textContent='Não foi possível ligar. Tente novamente.'; return; }
+  if(!r.ok){ errEl.textContent = r.error; return; }
+  S.policies.empresa = r.apolices;
   S.empresaLoaded = true;
   S.empresaClient = { nif: empresaPending.nif, nome: empresaPending.nome };
   save();
@@ -955,12 +1049,12 @@ function updateDebitNote(){
   const inst = fmtEuro(instNum);
   const exact = Math.abs(instNum*fi.n - total) < 0.005;
   const approx = exact ? '' : '~';
-  const notifOn = S.notifications.pagamentos;
+  const pagOn = notifOn('pagamentos');
   let calc = fi.n===1
     ? 'Pagamento <b>anual</b> de <b>'+fmtEuro(total)+'</b>.'
     : '<b>'+fi.n+'×</b> de '+approx+'<b>'+inst+'</b> = '+fmtEuro(total)+'/ano.';
   note.innerHTML = calc+'<br>'+
-    (notifOn ? 'Será <b>notificado</b> antes de cada débito.' : 'Active <b>Notificações · Pagamentos</b> no perfil para ser avisado.');
+    (pagOn ? 'Será <b>notificado</b> antes de cada débito.' : 'Active <b>Notificações · Pagamentos</b> no perfil para ser avisado.');
 }
 
 function buildCatalog(audience){
@@ -1631,11 +1725,11 @@ function renderProfile(){
   const bar = $('#prof-bar'); if(bar) bar.style.width = Math.min(100,(pts/50)*100)+'%';
   // toggles reflect state
   setToggle('updates', true); // locked on
-  setToggle('renovacao', S.notifications.renovacao);
-  setToggle('pagamentos', S.notifications.pagamentos);
-  setToggle('novidades', S.notifications.novidades);
-  setToggle('mensagens', S.notifications.mensagens);
-  setToggle('faceId', S.notifications.faceId);
+  setToggle('renovacao', notifOn('renovacao'));
+  setToggle('pagamentos', notifOn('pagamentos'));
+  setToggle('checkup', notifOn('checkup'));
+  setToggle('sazonal', notifOn('sazonal'));
+  estadoPermNotif();
   setToggle('empresaTab', empresaTabVisible());
 }
 function setToggle(key, on){ const el=$('[data-toggle="'+key+'"]'); if(el) el.dataset.on = on?'1':'0'; }
@@ -1653,6 +1747,8 @@ function toggleNotif(el){
   if(key==='empresaTab'){ el.dataset.on = el.dataset.on==='1'?'0':'1'; S.showEmpresa = el.dataset.on==='1'; save(); applyEmpresaTab(); return; }
   el.dataset.on = el.dataset.on==='1'?'0':'1';
   S.notifications[key] = el.dataset.on==='1'; save();
+  if(el.dataset.on==='1') pedirPermissaoNotif();
+  renderNotifs();
 }
 function fmtDate(iso){
   const d = new Date(iso+'T00:00:00'); if(isNaN(d)) return iso;
@@ -1825,6 +1921,9 @@ function runAct(a, t){
   if(a==='login'){ const b=document.querySelector('.lg-go'); if(b && !b.classList.contains('busy')){ b.classList.add('busy'); const sc=document.getElementById('s-login'); Promise.resolve(doLogin()).finally(()=>{ const ok=!sc.classList.contains('active'); if(ok){ const v=document.createElement('div'); v.className='lg-veil'; document.body.appendChild(v); setTimeout(()=>v.remove(),900); } setTimeout(()=>b.classList.remove('busy'),ok?600:350); }); } else if(!b) doLogin(); }
   else if(a==='register') doRegister();
   else if(a==='recuperar-pass') doRecuperarPassword();
+  else if(a==='recuperar-enviar') doRecuperarEnviar();
+  else if(a==='nova-pass') doNovaPass();
+  else if(a==='abrir-nova-pass') abrirNovaPass(false);
   else if(a==='skip-intro') skipIntro();
   else if(a==='logout') logout();
   else if(a==='add-policy') openSheet('sh-add');
@@ -1996,6 +2095,8 @@ function init(){
   }
 }
 document.addEventListener('DOMContentLoaded', init);
+// link de recuperação de palavra-passe (email do Supabase) → pedir a nova palavra-passe
+if(window.EXASupabase && window.EXASupabase.aoRecuperar) window.EXASupabase.aoRecuperar(()=>abrirNovaPass(true));
 
 if('serviceWorker' in navigator && location.protocol === 'https:'){
   window.addEventListener('load', function(){
@@ -2004,7 +2105,7 @@ if('serviceWorker' in navigator && location.protocol === 'https:'){
 }
 
 // expose for inline & debugging
-window.EXA = { nav, back, S:()=>S, reset:resetApp };
+window.EXA = { nav, back, S:()=>S, reset:resetApp, notificar, renderNotifs };
 })();
 
 (function(){const car=document.getElementById('ob-car'),cd=document.getElementById('ob-cd');if(!car||!cd)return;car.addEventListener('scroll',()=>{const i=Math.round(car.scrollLeft/(car.clientWidth-36));[...cd.children].forEach((d,k)=>d.classList.toggle('on',k===i));},{passive:true});})();

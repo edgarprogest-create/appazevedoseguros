@@ -16,9 +16,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Bad+Script&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="exa-app.css?v=1795170492114">
+<link rel="stylesheet" href="exa-app.css?v=20261120b">
 <script src="image-slot.js"></script>
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="supabase-js-2.119.2.js"></script>
 <template id="__bundler_thumbnail" data-bg-color="#FF5F2E">
   <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
     <rect width="1200" height="800" fill="#FF5F2E"/>
@@ -141,7 +141,7 @@
         </div>
         <div class="pad" style="padding-top:4px;flex:1;">
           <div class="input-wrap"><span class="lbl">NIF</span><input class="input" id="reg-nif" inputmode="numeric" placeholder="o seu NIF"></div>
-          <div class="input-wrap"><span class="lbl">Últimos 4 dígitos de uma apólice ativa</span><input class="input" id="reg-digitos" inputmode="numeric" maxlength="6" placeholder="0000"></div>
+          <div class="input-wrap"><span class="lbl">Últimos 4 dígitos de uma apólice ativa</span><input class="input" id="reg-digitos" inputmode="numeric" minlength="4" maxlength="8" placeholder="0000"></div>
           <div class="input-wrap"><span class="lbl">Email</span><input class="input" id="reg-email" type="email" placeholder="para recuperar a palavra-passe"></div>
           <div class="input-wrap"><span class="lbl">Palavra-passe</span><input class="input" id="reg-pass" type="password" placeholder="mín. 8 caracteres"></div>
           <div class="input-wrap" style="margin-bottom:8px;"><span class="lbl">Confirmar</span><input class="input" id="reg-pass2" type="password" placeholder="repita a palavra-passe"></div>
@@ -449,15 +449,26 @@
           </div>
         </div>
 
+        <!-- notificações -->
+        <div class="pad" style="padding-top:8px;padding-bottom:8px;">
+          <div class="lbl ac" style="margin-bottom:8px;">Notificações</div>
+          <div class="list">
+            <div class="li" data-toggle="renovacao" data-on="1"><div style="flex:1;"><div class="nm">Renovações</div><div class="ds">Aviso 60 dias antes de cada apólice renovar</div></div><div class="sw"><div class="sw-th"></div></div></div>
+            <div class="li" data-toggle="pagamentos" data-on="1"><div style="flex:1;"><div class="nm">Pagamentos</div><div class="ds">Aviso 3 dias antes de cada débito</div></div><div class="sw"><div class="sw-th"></div></div></div>
+            <div class="li" data-toggle="checkup" data-on="1"><div style="flex:1;"><div class="nm">Check-up de saúde</div><div class="ds">Lembrete a cada 6 meses (seguro de saúde)</div></div><div class="sw"><div class="sw-th"></div></div></div>
+            <div class="li" data-toggle="sazonal" data-on="1"><div style="flex:1;"><div class="nm">Dicas de saúde da época</div><div class="ds">Gripe, alergias, verão… na rede Médis</div></div><div class="sw"><div class="sw-th"></div></div></div>
+          </div>
+          <div id="notif-perm" style="margin-top:8px;font-size:11px;line-height:1.5;color:var(--ink-2);"></div>
+        </div>
+
         <!-- segurança -->
         <div class="pad" style="padding-top:8px;padding-bottom:18px;">
           <div class="lbl ac" style="margin-bottom:8px;">Segurança</div>
           <div class="sobre-app"><div class="am-k">Sobre esta app</div><p class="sa-main">A Ageas Seguros é a seguradora. A Mediação Edgar Azevedo Seguros é especializada em proteção pessoal, familiar, patrimonial, profissional e empresarial, e é quem cuida de si. Esta app é o nosso acompanhamento, no seu telemóvel, com todos os benefícios associados à Rede Private.</p><p class="sa-sub"><b>O que é a Rede Private?</b> É a rede de consultores que trabalha dentro da Ageas Seguros, onde cada consultor acompanha os seus clientes de forma autónoma. A Mediação Edgar Azevedo Seguros tem uma equipa própria de assistência para tratar cada caso seu com mais rapidez e proximidade.</p></div>
           <div class="am-perfil"><div class="am-card"><div class="am-k">Informação importante</div><div class="am-t">Foi contactado para mudar de mediador?</div><p class="am-p">Se alguém, incluindo um balcão ou loja, lhe propuser alterar o mediador das suas apólices, não assine nada sem falar primeiro com o seu mediador <b>Edgar Azevedo</b>. Mudar de mediador pode alterar as condições e o acompanhamento que tem hoje.</p><div class="am-nat"><b>Em todo Portugal continental.</b> A Mediação Azevedo Seguros não está limitada a uma zona: presta o mesmo serviço de uma loja, presencialmente, digitalmente e por telefone.</div><button type="button" class="am-more" data-sheet="sh-mediador">Saber as diferenças entre mediadores →</button><div class="am-b"><a href="https://wa.me/351913042770?text=Ol%C3%A1%20Edgar%2C%20fui%20contactado%20para%20alterar%20o%20mediador%20das%20minhas%20ap%C3%B3lices%20e%20queria%20confirmar%20consigo." target="_blank" rel="noopener" class="w">Avisar no WhatsApp</a><a href="tel:+351913042770" class="t">Ligar</a></div></div></div>
           <div class="list">
-            <div class="li"><div class="nm">Alterar palavra-passe</div><span class="arr" style="font-family:var(--display);font-style:italic;color:var(--muted);">→</span></div>
+            <div class="li" data-act="abrir-nova-pass" style="cursor:pointer;"><div class="nm">Alterar palavra-passe</div><span class="arr" style="font-family:var(--display);font-style:italic;color:var(--muted);">→</span></div>
             <div class="li" data-toggle="empresaTab" data-on="1"><div style="flex:1;"><div class="nm">Separador Empresa</div><div class="ds">Mostrar a wallet da empresa</div></div><div class="sw"><div class="sw-th"></div></div></div>
-            <div class="li" data-toggle="faceId" data-on="1"><div style="flex:1;"><div class="nm">Face ID</div><div class="ds">Aceder com reconhecimento facial</div></div><div class="sw"><div class="sw-th"></div></div></div>
           </div>
           <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--accent);font-weight:600;cursor:pointer;" data-act="logout">Terminar sessão</div>
         </div>
@@ -943,6 +954,30 @@
     </div>
 
     <!-- empresa login -->
+    <div class="sheet-wrap" id="sh-recuperar">
+      <div class="sheet">
+        <div class="handle"></div>
+        <div class="ttl"><h3>Recuperar <em>palavra-passe.</em></h3><button class="x" data-close="sh-recuperar">✕</button></div>
+        <div class="sub">Indique o email da sua conta. Enviamos um link para criar uma nova palavra-passe.</div>
+        <div class="input-wrap"><span class="lbl">Email</span><input class="input" id="rec-email" type="email" autocomplete="email" placeholder="o seu email"></div>
+        <div class="err-msg" id="rec-err"></div>
+        <button class="btn accent" style="margin-top:14px;" data-act="recuperar-enviar"><span>Enviar link</span><span class="arr">→</span></button>
+        <div style="margin-top:10px;font-size:11px;line-height:1.5;color:var(--ink-2);">Não indicou email no registo? Fale com o seu mediador.</div>
+      </div>
+    </div>
+
+    <div class="sheet-wrap" id="sh-nova-pass">
+      <div class="sheet">
+        <div class="handle"></div>
+        <div class="ttl"><h3>Nova <em>palavra-passe.</em></h3><button class="x" data-close="sh-nova-pass">✕</button></div>
+        <div class="sub" id="np-sub">Escolha uma nova palavra-passe (mínimo 8 caracteres).</div>
+        <div class="input-wrap"><span class="lbl">Nova palavra-passe</span><input class="input" id="np-pass" type="password" autocomplete="new-password"></div>
+        <div class="input-wrap"><span class="lbl">Repetir</span><input class="input" id="np-pass2" type="password" autocomplete="new-password"></div>
+        <div class="err-msg" id="np-err"></div>
+        <button class="btn accent" style="margin-top:14px;" data-act="nova-pass"><span>Guardar</span><span class="arr">→</span></button>
+      </div>
+    </div>
+
     <div class="sheet-wrap" id="sh-empresa-login">
       <div class="sheet">
         <div class="handle"></div>
@@ -1043,8 +1078,8 @@
 
 <script src="exa-store.js"></script>
 <script src="exa-protocolos.js?v=1793450041191"></script>
-<script src="exa-supabase.js?v=1793449668110"></script>
-<script src="exa-app.js?v=1795170449499"></script>
+<script src="exa-supabase.js?v=20261120b"></script>
+<script src="exa-app.js?v=20261120b"></script>
 <script src="exa-objetivos.js"></script>
 <script src="exa-saude-planos.js"></script>
 <script src="exa-corpo.js?v=1793449276223"></script>

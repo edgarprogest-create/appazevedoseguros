@@ -66,21 +66,55 @@
     };
   }
 
-  async function login(nifRaw, password){
+  var OFFLINE_MSG = 'Sem ligação à internet. Verifique a rede e tente novamente.';
+  function semRede(err){
+    if(!err) return false;
+    if(typeof navigator!=='undefined' && navigator.onLine===false) return true;
+    return err.status===0 || /fetch|network|load failed|timeout/i.test(String(err.message||err.name||''));
+  }
+
+  async function login(idRaw, password){
     if(!sb) return { ok:false, error:'Ligação indisponível.' };
-    var nif = String(nifRaw).replace(/\D/g,'');
+    var id = String(idRaw).trim();
     var emails = [];
-    var er = await sb.rpc('email_do_nif', { p_nif: nif });
-    if(!er.error && er.data) emails.push(er.data);
-    emails.push(nif+'@exaseguros.local');
+    if(id.indexOf('@')>0){
+      emails.push(id);
+    } else {
+      var nif = id.replace(/\D/g,'');
+      // O email só é devolvido se a palavra-passe estiver certa (8-passo-seguranca.sql)
+      var er = await sb.rpc('email_para_login', { p_nif: nif, p_pass: password });
+      if(er.error && semRede(er.error)) return { ok:false, offline:true, error:OFFLINE_MSG };
+      if(!er.error && er.data) emails.push(er.data);
+      emails.push(nif+'@exaseguros.local');
+    }
     var authed = null, lastErr = null;
     for(var i=0;i<emails.length;i++){
       var r = await sb.auth.signInWithPassword({ email: emails[i], password: password });
       if(!r.error){ authed = r; break; }
       lastErr = r.error;
+      if(semRede(lastErr)) return { ok:false, offline:true, error:OFFLINE_MSG };
     }
     if(!authed) return { ok:false, error:'Credenciais inválidas.' };
-    return await carregarCliente(nif);
+    return await carregarCliente();
+  }
+
+  async function alterarPassword(nova){
+    if(!sb) return { ok:false, error:'Ligação indisponível.' };
+    var s = await sb.auth.getSession();
+    if(!s.data || !s.data.session) return { ok:false, error:'A sessão expirou. Entre de novo ou use o link do email.' };
+    var r = await sb.auth.updateUser({ password: nova });
+    if(r.error){
+      if(semRede(r.error)) return { ok:false, error:OFFLINE_MSG };
+      if(/different|same/i.test(r.error.message||'')) return { ok:false, error:'A nova palavra-passe tem de ser diferente da anterior.' };
+      return { ok:false, error:'Não foi possível alterar a palavra-passe.' };
+    }
+    return { ok:true };
+  }
+
+  // Link "recuperar palavra-passe" do email: avisa a app para pedir a nova palavra-passe
+  function aoRecuperar(cb){
+    if(!sb) return;
+    sb.auth.onAuthStateChange(function(ev){ if(ev==='PASSWORD_RECOVERY') setTimeout(cb, 0); });
   }
 
   async function restaurarSessao(){
@@ -96,7 +130,7 @@
     if(res.error) return { ok:false, error:'Não foi possível carregar as renovações.' };
     return { ok:true, rows: res.data || [] };
   }
-  async function carregarCliente(nif){
+  async function carregarCliente(){
     var uRes = await sb.auth.getUser();
     var uid = uRes.data && uRes.data.user && uRes.data.user.id;
     var cRes = await sb.from('clientes').select('*').eq('auth_id', uid).limit(1);
@@ -114,80 +148,85 @@
     return { ok:true, cliente:cliente, apolices:apolices, protocolo:protocolo };
   }
 
+  // Área Empresa, passo 1: confirma NIF + email (não devolve apólices)
   async function loginEmpresa(nifRaw, email){
     if(!sb) return { ok:false, error:'Ligação indisponível.' };
     var nif = String(nifRaw).replace(/\D/g,'');
     var rpcRes = await sb.rpc('empresa_login', { p_nif: nif, p_email: email });
+    if(rpcRes.error && semRede(rpcRes.error)) return { ok:false, error:OFFLINE_MSG };
     if(rpcRes.error || !rpcRes.data || !rpcRes.data.length) return { ok:false, error:'Empresa não encontrada ou email não corresponde.' };
     var row = rpcRes.data[0];
-    var apolices = (row.apolices||[]).filter(activeOnly).map(mapApolice);
-    return { ok:true, cliente:{ nif:row.nif, nome:row.nome }, apolices:apolices };
+    return { ok:true, cliente:{ nif:row.nif, nome:row.nome } };
   }
 
-  async function requestEmpresaOtp(nifRaw, email){
+  // Área Empresa, passo 2: o código do agente é verificado no servidor
+  async function empresaApolices(nifRaw, email, codigo){
     if(!sb) return { ok:false, error:'Ligação indisponível.' };
     var nif = String(nifRaw).replace(/\D/g,'');
-    var cRes = await sb.from('clientes').select('*').eq('nif', nif).maybeSingle();
-    if(cRes.error || !cRes.data) return { ok:false, error:'Empresa não encontrada.' };
-    var cliente = cRes.data;
-    if((cliente.email||'').trim().toLowerCase() !== String(email).trim().toLowerCase()){
-      return { ok:false, error:'Email não corresponde ao NIF indicado.' };
-    }
-    var otpRes = await sb.auth.signInWithOtp({ email: email, options:{ shouldCreateUser:true } });
-    if(otpRes.error) return { ok:false, error:'Não foi possível enviar o código.' };
-    return { ok:true };
-  }
-
-  async function verifyEmpresaOtp(nifRaw, email, token){
-    if(!sb) return { ok:false, error:'Ligação indisponível.' };
-    var nif = String(nifRaw).replace(/\D/g,'');
-    var verifyRes = await sb.auth.verifyOtp({ email: email, token: token, type:'email' });
-    if(verifyRes.error) return { ok:false, error:'Código inválido ou expirado.' };
-    var cRes = await sb.from('clientes').select('*').eq('nif', nif).maybeSingle();
-    if(cRes.error || !cRes.data) return { ok:false, error:'Empresa não encontrada.' };
-    var cliente = cRes.data;
-    var aRes = await sb.from('apolices').select('*').eq('nif_cliente', nif);
-    var apolices = (aRes.data||[]).map(mapApolice);
-    return { ok:true, cliente:cliente, apolices:apolices };
+    var r = await sb.rpc('empresa_apolices', { p_nif: nif, p_email: email, p_codigo: String(codigo||'').trim() });
+    if(r.error && semRede(r.error)) return { ok:false, error:OFFLINE_MSG };
+    if(r.error || !Array.isArray(r.data)) return { ok:false, error:'Código inválido. Confirme com o seu agente.' };
+    return { ok:true, apolices: r.data.filter(activeOnly).map(mapApolice) };
   }
 
   async function verificarRegisto(nifRaw, digitos){
     if(!sb) return { ok:false, error:'Ligação indisponível.' };
     var nif = String(nifRaw).replace(/\D/g,'');
     var d = String(digitos).replace(/\D/g,'');
+    if(d.length<4) return { ok:false, error:'Indique pelo menos os últimos 4 dígitos da apólice.' };
     var res = await sb.rpc('verificar_registo', { p_nif: nif, p_digitos: d });
+    if(res.error && semRede(res.error)) return { ok:false, error:OFFLINE_MSG };
     if(res.error) return { ok:false, error:'Não foi possível validar. Tente novamente.' };
     if(!res.data || !res.data.length) return { ok:false, notFound:true, error:'Não encontrámos estes dados.' };
     var row = res.data[0];
-    if(!row.valido) return { ok:false, error:'Os dígitos da apólice não correspondem a este NIF.' };
-    return { ok:true, nome:row.nome, email:row.email, nif:nif };
+    if(!row.valido) return { ok:false, error:'Os dígitos da apólice não correspondem a este NIF (ou foram feitas demasiadas tentativas; tente daqui a uma hora).' };
+    return { ok:true, nome:row.nome, nif:nif };
   }
 
-  async function criarConta(nifRaw, password, email){
+  var LIGAR_ERROS = {
+    ja_registado:'Este NIF já tem conta. Faça login ou use "Esqueceu a palavra-passe?".',
+    ja_associada:'Esta conta já está associada a outro NIF. Contacte o seu mediador.',
+    digitos:'Os dígitos da apólice não correspondem a este NIF.',
+    nif:'Não encontrámos este NIF. Contacte o seu mediador.',
+    limite:'Demasiadas tentativas. Tente novamente daqui a uma hora.',
+    sem_permissao:'Não foi possível confirmar a conta. Tente novamente.'
+  };
+
+  async function criarConta(nifRaw, password, email, digitos){
     if(!sb) return { ok:false, error:'Ligação indisponível.' };
     var nif = String(nifRaw).replace(/\D/g,'');
-    var authEmail = (email && email.indexOf('@')>0) ? email : (nif+'@exaseguros.local');
+    var authEmail = (email && email.indexOf('@')>0) ? email.trim() : (nif+'@exaseguros.local');
+    var uid = null;
     var up = await sb.auth.signUp({ email: authEmail, password: password });
     if(up.error){
-      if(/already/i.test(up.error.message||'')) return { ok:false, error:'Já existe uma conta com este email ou NIF. Faça login.' };
-      return { ok:false, error:'Não foi possível criar a conta.' };
+      if(semRede(up.error)) return { ok:false, error:OFFLINE_MSG };
+      if(!/already/i.test(up.error.message||'')) return { ok:false, error:'Não foi possível criar a conta.' };
+      // a conta já existe (ex.: registo começado como convidado): entra e associa
+      var si = await sb.auth.signInWithPassword({ email: authEmail, password: password });
+      if(si.error) return { ok:false, error:'Já existe uma conta com este email. Faça login.' };
+      uid = si.data && si.data.user && si.data.user.id;
+    } else {
+      uid = up.data && up.data.user && up.data.user.id;
     }
-    var uid = up.data && up.data.user && up.data.user.id;
     if(!uid) return { ok:false, error:'Não foi possível criar a conta.' };
-    var link = await sb.rpc('ligar_auth', { p_nif: nif, p_auth_id: uid, p_email: email||null });
+    var link = await sb.rpc('ligar_auth', { p_nif: nif, p_auth_id: uid, p_email: email||null, p_digitos: String(digitos||'').replace(/\D/g,'') });
     if(link.error) return { ok:false, error:'Conta criada, mas não ficou associada. Contacte o seu mediador.' };
+    if(link.data !== 'ok'){ try{ await sb.auth.signOut(); }catch(e){} return { ok:false, error: LIGAR_ERROS[link.data] || LIGAR_ERROS.sem_permissao }; }
     return { ok:true };
   }
 
-  async function recuperarPassword(nifRaw){
+  // Recuperação: o cliente indica o email da conta (já não se obtém o email a partir do NIF)
+  async function recuperarPassword(email){
     if(!sb) return { ok:false, error:'Ligação indisponível.' };
-    var nif = String(nifRaw).replace(/\D/g,'');
-    var res = await sb.rpc('email_do_nif', { p_nif: nif });
-    if(res.error) return { ok:false, error:'NIF não encontrado.' };
-    var email = res.data;
-    if(!email) return { ok:false, error:'Não temos email registado. Contacte o seu mediador.' };
-    var r = await sb.auth.resetPasswordForEmail(email);
-    if(r.error) return { ok:false, error:'Não foi possível enviar o email.' };
+    email = String(email||'').trim();
+    if(email.indexOf('@')<1) return { ok:false, error:'Indique o email da sua conta.' };
+    var volta = location.origin + location.pathname;
+    var r = await sb.auth.resetPasswordForEmail(email, { redirectTo: volta });
+    if(r.error){
+      if(semRede(r.error)) return { ok:false, error:OFFLINE_MSG };
+      if(/rate|seconds/i.test(r.error.message||'')) return { ok:false, error:'Aguarde um minuto antes de pedir outro email.' };
+      return { ok:false, error:'Não foi possível enviar o email.' };
+    }
     return { ok:true, email:email };
   }
 
@@ -218,7 +257,10 @@
     var r = await sb.rpc('criar_convidado', { p_nif:n, p_nome:nome, p_email:email||null, p_codigo:codigo||null, p_auth_id:uid });
     if(r.error) return { ok:false, error:'Conta criada, mas não ficou associada. Contacte o mediador.' };
     var row = (r.data && r.data.length) ? r.data[0] : {};
-    return { ok:true, jaCliente: row.motivo === 'ja_cliente' };
+    if(row.ok) return { ok:true };
+    try{ await sb.auth.signOut(); }catch(e){}
+    if(row.motivo === 'ja_cliente') return { ok:false, jaCliente:true, error:'Este NIF já é nosso cliente. Use "Criar conta" com os últimos 4 dígitos de uma apólice.' };
+    return { ok:false, error: LIGAR_ERROS[row.motivo] || 'Não foi possível criar a conta. Contacte o mediador.' };
   }
 
   async function convitesDoCliente(nif){
@@ -284,16 +326,5 @@
     return r.data;
   }
 
-  async function validarDemo(codigo){
-    if(!sb) return { ok:false, offline:true };
-    try{
-      var r = await sb.from('demo_convites').select('codigo,nome,expira').eq('codigo', codigo).maybeSingle();
-      if(r.error) return { ok:false, offline:true };
-      if(!r.data) return { ok:false };
-      if(r.data.expira && new Date(r.data.expira) < new Date()) return { ok:false, expirado:true };
-      try{ await sb.from('demo_acessos').insert({ codigo:codigo, user_agent:navigator.userAgent.slice(0,200) }); }catch(e){}
-      return { ok:true, nome:r.data.nome||'' };
-    }catch(e){ return { ok:false, offline:true }; }
-  }
-  window.EXASupabase = { validarDemo:validarDemo, rentabilidade:rentabilidade, login:login, restaurarSessao:restaurarSessao, signOut:function(){ return sb ? sb.auth.signOut() : null; }, loginEmpresa:loginEmpresa, verificarRegisto:verificarRegisto, criarConta:criarConta, recuperarPassword:recuperarPassword, renovacoes:renovacoes, meuCodigo:meuCodigo, donoDoCodigo:donoDoCodigo, criarConvidado:criarConvidado, convitesDoCliente:convitesDoCliente, pontosDoCliente:pontosDoCliente, convitesTodos:convitesTodos, registarResgate:registarResgate, investimentoDoCliente:investimentoDoCliente, investimentosDoCliente:investimentosDoCliente, pedirReforco:pedirReforco, reforcosDoCliente:reforcosDoCliente, mapApolice:mapApolice };
+  window.EXASupabase = { rentabilidade:rentabilidade, login:login, restaurarSessao:restaurarSessao, signOut:function(){ return sb ? sb.auth.signOut() : null; }, loginEmpresa:loginEmpresa, empresaApolices:empresaApolices, alterarPassword:alterarPassword, aoRecuperar:aoRecuperar, verificarRegisto:verificarRegisto, criarConta:criarConta, recuperarPassword:recuperarPassword, renovacoes:renovacoes, meuCodigo:meuCodigo, donoDoCodigo:donoDoCodigo, criarConvidado:criarConvidado, convitesDoCliente:convitesDoCliente, pontosDoCliente:pontosDoCliente, convitesTodos:convitesTodos, registarResgate:registarResgate, investimentoDoCliente:investimentoDoCliente, investimentosDoCliente:investimentosDoCliente, pedirReforco:pedirReforco, reforcosDoCliente:reforcosDoCliente, mapApolice:mapApolice };
 })();

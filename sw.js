@@ -1,4 +1,4 @@
-const CACHE = 'exa-seguros-v2';
+const CACHE = 'exa-seguros-v3';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
@@ -24,5 +24,17 @@ self.addEventListener('fetch', e => {
       caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
       return res;
     }).catch(() => caches.match(req).then(r => r || caches.match('./index.html')))
+  );
+});
+
+// Tocar numa notificação abre a app (ou traz para a frente a que já está aberta)
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  const alvo = new URL((e.notification.data && e.notification.data.url) || './', self.registration.scope).href;
+  e.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(cs => {
+      for (const c of cs) { if (c.url.startsWith(self.registration.scope) && 'focus' in c) return c.focus(); }
+      return self.clients.openWindow ? self.clients.openWindow(alvo) : null;
+    })
   );
 });
