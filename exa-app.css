@@ -2302,3 +2302,55 @@ body.splash-side{background-size:100% 100%,100% 100%,cover,100% 100% !important;
 .wl-meta .wx{flex-shrink:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
 
 #s-login.active.lg-done{animation:none;}
+
+/* ===== Design azevedo_seg_17 ===== */
+/* tempo ao lado da saudação */
+.wl-sub{display:flex;align-items:center;gap:6px;min-width:0;}
+.wl-sub #greet-tail{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+.wl-sub .wx{flex-shrink:0;display:inline-flex;align-items:center;gap:3px;font-size:12px;color:var(--ink-2);white-space:nowrap;}
+.wl-sub .wx:not(:empty)::before{content:"·";margin-right:3px;}
+.wl-sub-old{display:none !important;}
+.wl-greet-row{display:flex;align-items:center;gap:8px;min-width:0;}
+.wl-greet-row .wl-greet{min-width:0;}
+.wl-greet-row .wx{flex-shrink:0;display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 9px;border-radius:999px;background:var(--bg-2,#F3F1EC);font-size:12px;font-weight:600;color:var(--ink);white-space:nowrap;}
+.wl-greet-row .wx:empty{display:none;}
+.wl-greet-row .wx::before{display:none;}
+.wl-greet-row .wx .wx-d,.wl-greet-row .wx .wx-c,.wl-greet-row .wx [class*="desc"],.wl-greet-row .wx [class*="city"]{display:none;}
+.wl-greet-row .wx span:last-child{display:none;}
+.wl-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.wl-right .wx{display:inline-flex;align-items:center;gap:4px;height:42px;padding:0 12px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;}
+.wl-right .wx:empty{display:none;}
+.wl-right .wx::before{display:none;}
+.wl-right .wx span:last-child{display:none;}
+/* botão i + janela Informações */
+.wl-right .info-btn{width:42px;height:42px;border-radius:50%;background:#fff;border:1px solid var(--line);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-family:Georgia,serif;font-size:18px;font-weight:700;font-style:normal;color:var(--ink);line-height:1;}
+.in-sec{margin-top:18px;}
+.in-h{font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:8px;}
+.in-list{display:flex;flex-direction:column;gap:8px;}
+.in-item{display:block;padding:12px 14px;border-radius:14px;background:#fff;border:1px solid var(--line);text-decoration:none;color:var(--ink);}
+.in-t{display:flex;align-items:baseline;justify-content:space-between;gap:10px;}
+.in-t b{font-size:14px;font-weight:600;line-height:1.3;}
+.in-t span{flex-shrink:0;font-size:11px;color:var(--ink-2);}
+.in-item p{margin:4px 0 0;font-size:12.5px;line-height:1.45;color:var(--ink-2);}
+.in-more{display:inline-block;margin-top:8px;font-size:12.5px;font-weight:600;color:var(--ink);text-decoration:none;}
+.in-links{display:flex;flex-direction:column;border-radius:14px;border:1px solid var(--line);background:#fff;overflow:hidden;}
+.in-link{display:flex;align-items:center;gap:12px;padding:13px 14px;text-decoration:none;color:var(--ink);min-height:44px;}
+.in-link+.in-link{border-top:1px solid var(--line);}
+.in-link div{flex:1;min-width:0;}
+.in-link b{display:block;font-size:14px;font-weight:600;}
+.in-link span{display:block;font-size:12px;color:var(--ink-2);margin-top:2px;}
+.in-link em{font-style:normal;color:var(--ink-2);}
+.in-empty{font-size:12.5px;color:var(--ink-2);margin:0;}
+.in-assist{padding:14px;border-radius:14px;background:#fff;border:1px solid var(--line);}
+.ia-nums{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.ia-call{display:flex;flex-direction:column;gap:2px;padding:12px;border-radius:12px;background:var(--ink);color:#fff;text-decoration:none;min-height:44px;}
+.ia-call b{font-size:15px;font-weight:700;letter-spacing:-0.01em;white-space:nowrap;}
+.ia-call span{font-size:11px;color:rgba(255,255,255,.75);}
+.ia-h{font-size:12px;font-weight:700;color:var(--ink);margin:14px 0 6px;}
+.ia-list{margin:0;padding-left:18px;font-size:12.5px;line-height:1.6;color:var(--ink-2);}
+@media (max-width:360px){.ia-nums{grid-template-columns:1fr;}}
+.ia-nums.ia-one{grid-template-columns:1fr;}
+.ia-call.ia-medis{background:#0A2A66;}
+.ia-call.ia-medis b{font-size:17px;}
+.ia-list b{color:var(--ink);font-weight:600;}
+.ia-list li+li{margin-top:4px;}

@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Bad+Script&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="exa-app.css?v=20261121h">
+<link rel="stylesheet" href="exa-app.css?v=20261121i">
 <script src="image-slot.js"></script>
 <script src="supabase-js-2.119.2.js"></script>
 <template id="__bundler_thumbnail" data-bg-color="#3F2B5F">
@@ -193,14 +193,13 @@
           <div class="wl-row">
             <button type="button" class="gestor-badge" data-sheet="sh-gestor" aria-label="Gestor de conta" style="position:relative;"><img class="gestor-foto" src="gestor-foto.webp" alt="Edgar Azevedo"><span class="gestor-badge-dot"></span></button>
             <div class="wl-txt">
-              <div class="wl-greet"><span class="lbl" id="greet-label">Bom dia</span>, <span id="greet-name">Sr. José</span></div>
-              <div class="wl-sub" id="greet-tail">A sua proteção está em ordem.</div>
+              <div class="wl-greet-row"><div class="wl-greet"><span class="lbl" id="greet-label">Bom dia</span>, <span id="greet-name">Sr. José</span></div></div>
+              <div class="wl-sub"><span id="greet-tail">A sua proteção está em ordem.</span></div><div class="wl-sub-old" hidden="">A sua proteção está em ordem.</div>
             </div>
-            <button type="button" class="bell-btn" data-sheet="sh-notifs" aria-label="Notificações"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg><span id="bell-count">0</span></button>
+            <div class="wl-right"><button type="button" class="info-btn" data-sheet="sh-info" aria-label="Informações">i</button><button type="button" class="bell-btn" data-sheet="sh-notifs" aria-label="Notificações"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg><span id="bell-count">0</span></button></div>
           </div>
           <div class="wl-meta">
-            <span class="wl-g">Gestor <b>Edgar Azevedo</b></span>
-            <div id="wx" class="wx" aria-live="polite"></div>
+            <span class="wl-g"><b>Edgar Azevedo</b> · Diretor</span>
             <button type="button" class="wl-inv" data-nav="invest-painel"><span class="d"></span>Investimento</button>
           </div>
         </div>
@@ -763,7 +762,7 @@
         <div class="handle"></div>
         <div class="ttl"><h3>As vantagens do <em>seu protocolo.</em></h3><button class="x" data-close="sh-prot" aria-label="Fechar">✕</button></div>
         <div id="prot-body"></div>
-        <div class="pv-gestor"><span class="g-on"><img class="gestor-foto" src="gestor-foto.webp" alt="Edgar Azevedo" style="width:44px;height:44px;"><i aria-hidden="true"></i></span><div><span>Gestor pessoal associado</span><b>Edgar Azevedo</b><small>Rede Private</small></div><img class="pv-ag" src="logo-ageas-white.png" alt="Ageas Seguros"></div>
+        <div class="pv-gestor"><span class="g-on"><img class="gestor-foto" src="gestor-foto.webp" alt="Edgar Azevedo" style="width:44px;height:44px;"><i aria-hidden="true"></i></span><div><span>Gestor pessoal associado</span><b>Edgar Azevedo</b><small>Diretor da Mediação Edgar Azevedo Seguros</small></div><img class="pv-ag" src="logo-ageas-white.png" alt="Ageas Seguros"></div>
         <div class="md-share"><a class="btn accent" href="https://wa.me/351913042770?text=Ol%C3%A1%20Edgar%2C%20gostava%20de%20saber%20mais%20sobre%20as%20condi%C3%A7%C3%B5es%20do%20meu%20protocolo." target="_blank" rel="noopener"><span>Falar com o gestor</span></a><a class="btn ghost" href="tel:+351913042770"><span>Ligar</span></a></div>
       </div>
     </div>
@@ -814,7 +813,7 @@
         <div class="bc-wrap"><button type="button" class="bc" data-bc-flip aria-label="Virar cartão">
           <div class="bc-f bc-front">
             <div class="bc-top"><img src="logo-ageas-white.png" alt="Ageas Seguros" class="bc-ageas"><span class="bc-tag">Rede Private</span></div>
-            <div class="bc-me"><img src="gestor-foto.webp" alt="Edgar Azevedo" class="bc-foto"><div><b>Edgar Azevedo</b><span>Mediação Edgar Azevedo Seguros</span></div></div>
+            <div class="bc-me"><img src="gestor-foto.webp" alt="Edgar Azevedo" class="bc-foto"><div><b>Edgar Azevedo</b><span>Diretor da Mediação Edgar Azevedo Seguros</span></div></div>
             <div class="bc-ct"><span>+351 913 042 770</span><span>edgar.azevedo@private.ageas.pt</span></div>
           </div>
           <div class="bc-f bc-back">
@@ -833,6 +832,18 @@
       </div>
     </div>
 
+    <div class="sheet-wrap" id="sh-info">
+      <div class="sheet">
+        <div class="handle"></div>
+        <div class="ttl"><h3>Informações</h3><button class="x" data-close="sh-info" aria-label="Fechar">✕</button></div>
+        <div class="in-sec"><div class="in-h">Novidades da sua mediação</div><div id="info-nov" class="in-list"></div></div>
+        <div class="in-sec"><div class="in-h">Notícias Ageas</div><div id="info-ageas" class="in-list"></div><a class="in-more" href="https://www.ageas.pt" target="_blank" rel="noopener">Ver no site da Ageas ↗</a></div>
+        <div class="in-sec"><div class="in-h">Assistência em viagem · 24 horas</div><div class="in-assist"><div class="ia-nums"><a class="ia-call" href="tel:213102450"><b>213 102 450</b><span>Em Portugal</span></a><a class="ia-call" href="tel:+351213102450"><b>+351 213 102 450</b><span>A partir do estrangeiro</span></a></div><div class="ia-h">O que ter à mão ao ligar</div><ul class="ia-list"><li>Nome do tomador do seguro</li><li>Número da apólice</li><li>Localização exata</li><li>Contacto telefónico</li><li>Tipo de assistência necessária (reboque, avaria, acidente automóvel ou viagem)</li></ul><a class="in-more" href="https://www.ageas.pt" target="_blank" rel="noopener">Mais detalhes nas linhas de apoio Ageas ↗</a></div></div>
+        <div class="in-sec"><div class="in-h">Linha Medis · Enfermagem 24 horas</div><div class="in-assist"><div class="ia-nums ia-one"><a class="ia-call ia-medis" href="tel:218458888"><b>218 458 888</b><span>Enfermeiros 24h por dia, 7 dias por semana · rede fixa nacional</span></a></div><div class="ia-h">O que a equipa de enfermagem faz</div><ul class="ia-list"><li><b>Triagem e aconselhamento clínico:</b> avaliação de sintomas e orientação sobre o que fazer.</li><li><b>Encaminhamento:</b> indicação para clínica, urgência hospitalar, teleconsulta ou envio de médico ao domicílio (custo de 25€, 24h/dia, quando indicado).</li><li><b>Acompanhamento:</b> follow-up no dia seguinte.</li><li><b>Apoio oncológico:</b> acompanhamento personalizado para doentes e cuidadores (2.ª a 6.ª feira, das 8h00 às 20h00).</li></ul><div class="ia-h">Outros apoios relacionados</div><ul class="ia-list"><li><b>Cuidados ao domicílio após acidente:</b> em caso de acidente com internamento autorizado e dependência de terceira pessoa, a cobertura de assistência pode incluir enfermagem e fisioterapia ao domicílio, conforme as condições da apólice.</li><li><b>Acompanhamento médico contínuo:</b> pode também recorrer ao Médico Assistente Medis (presencial ou por teleconsulta na app) ou consultar a rede nas clínicas da marca, como a Clínica Medis em Lisboa.</li></ul></div></div>
+        <div class="in-sec"><div class="in-h">Links úteis</div><div id="info-links" class="in-links"></div></div>
+      </div>
+    </div>
+
     <div class="sheet-wrap" id="sh-gestor">
       <div class="sheet">
         <div class="handle"></div>
@@ -844,7 +855,7 @@
           </div>
           <div>
             <div style="font-family:var(--display);font-size:22px;font-weight:700;letter-spacing:-0.02em;line-height:1;">Edgar Azevedo</div>
-            <div style="font-family:var(--mono);font-size:10px;color:var(--ink-2);letter-spacing:0.10em;text-transform:uppercase;margin-top:4px;">Rede Private · Ageas</div>
+            <div style="font-size:12.5px;font-weight:600;color:var(--ink);margin-top:5px;line-height:1.3;">Diretor da Mediação Edgar Azevedo Seguros</div><div style="font-size:11.5px;color:var(--ink-2);margin-top:2px;">Agente Exclusivo Ageas · Rede Private</div>
           </div>
         </div>
         <p style="font-size:13px;line-height:1.5;color:var(--ink-2);margin-top:14px;">Acompanho a sua carteira de seguros ao longo da sua vida — estou ao seu dispor sempre que precisar.</p>
@@ -1083,8 +1094,8 @@
 
 <script src="exa-store.js"></script>
 <script src="exa-protocolos.js?v=1793450041191"></script>
-<script src="exa-supabase.js?v=20261121f"></script>
-<script src="exa-app.js?v=20261121g"></script>
+<script src="exa-supabase.js?v=20261121h"></script>
+<script src="exa-app.js?v=20261121h"></script>
 <script src="exa-objetivos.js"></script>
 <script src="exa-saude-planos.js?v=20261121b"></script>
 <script src="exa-corpo.js?v=20261121b"></script>

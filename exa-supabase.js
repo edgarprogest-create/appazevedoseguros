@@ -374,5 +374,10 @@
     try{ var s = await sb.auth.getSession(); return !!(s.data && s.data.session); }catch(e){ return false; }
   }
 
-  window.EXASupabase = { guardarPushVisitante:guardarPushVisitante, pushChave:pushChave, guardarPush:guardarPush, apagarPush:apagarPush, temSessao:temSessao, rentabilidade:rentabilidade, login:login, restaurarSessao:restaurarSessao, signOut:function(){ return sb ? sb.auth.signOut() : null; }, loginEmpresa:loginEmpresa, empresaApolices:empresaApolices, alterarPassword:alterarPassword, aoRecuperar:aoRecuperar, verificarRegisto:verificarRegisto, criarConta:criarConta, recuperarPassword:recuperarPassword, renovacoes:renovacoes, meuCodigo:meuCodigo, donoDoCodigo:donoDoCodigo, criarConvidado:criarConvidado, convitesDoCliente:convitesDoCliente, pontosDoCliente:pontosDoCliente, convitesTodos:convitesTodos, registarResgate:registarResgate, investimentoDoCliente:investimentoDoCliente, investimentosDoCliente:investimentosDoCliente, pedirReforco:pedirReforco, reforcosDoCliente:reforcosDoCliente, mapApolice:mapApolice };
+  // Novidades da mediação (tabela "novidades", 14-passo-novidades.sql)
+  async function novidades(){
+    if(!sb) return null;
+    try{ var r = await sb.from('novidades').select('tipo,titulo,texto,link,data').eq('ativo',true).order('data',{ascending:false}).limit(12); if(r.error) return null; return limpar(r.data||[]); }catch(e){ return null; }
+  }
+  window.EXASupabase = { novidades:novidades, guardarPushVisitante:guardarPushVisitante, pushChave:pushChave, guardarPush:guardarPush, apagarPush:apagarPush, temSessao:temSessao, rentabilidade:rentabilidade, login:login, restaurarSessao:restaurarSessao, signOut:function(){ return sb ? sb.auth.signOut() : null; }, loginEmpresa:loginEmpresa, empresaApolices:empresaApolices, alterarPassword:alterarPassword, aoRecuperar:aoRecuperar, verificarRegisto:verificarRegisto, criarConta:criarConta, recuperarPassword:recuperarPassword, renovacoes:renovacoes, meuCodigo:meuCodigo, donoDoCodigo:donoDoCodigo, criarConvidado:criarConvidado, convitesDoCliente:convitesDoCliente, pontosDoCliente:pontosDoCliente, convitesTodos:convitesTodos, registarResgate:registarResgate, investimentoDoCliente:investimentoDoCliente, investimentosDoCliente:investimentosDoCliente, pedirReforco:pedirReforco, reforcosDoCliente:reforcosDoCliente, mapApolice:mapApolice };
 })();

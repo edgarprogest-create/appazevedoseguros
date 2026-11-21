@@ -2253,6 +2253,7 @@ function mediadorShareText(){
     try{ const r=await fetch('https://api.bigdatacloud.net/data/reverse-geocode-client?latitude='+lat+'&longitude='+lon+'&localityLanguage=pt'); const j=await r.json(); return j.city||j.locality||''; }catch(e){ return ''; }
   }
   function start(){
+    if(!el()) return;   // o design atual não mostra o tempo: não pedir a localização ao telemóvel
     try{ const c=JSON.parse(localStorage.getItem('exa_wx')||'null'); if(c){ show(c); if(Date.now()-c.ts<30*60000) return; } }catch(e){}
     const fallback=()=>load(41.15,-8.61,'Porto');
     if(!navigator.geolocation) return fallback();
@@ -2267,12 +2268,47 @@ try{ if(!localStorage.getItem('exa_checkup_reset1')){ localStorage.removeItem('e
 document.addEventListener('click', e=>{ const t=e.target.closest('[data-cq]'); if(!t) return; const ta=$('#cond-texto'); if(ta && !t.classList.contains('on')){ ta.value=(ta.value.trim()?ta.value.trim()+'\n':'')+t.textContent; } t.classList.add('on'); });
 
 /* Demonstração partilhada com o cartão de visita: link que abre a app já em modo demo + código */
+/* ---------- Informações: novidades + notícias + links (design 17) ---------- */
+const EXA_LINKS = [
+  { t:'Rede Medis', d:'Médicos, clínicas e hospitais', u:'https://www.medis.pt/guia-medis/' },
+  { t:'Oficinas recomendadas Ageas', d:'Rede de oficinas convencionadas', u:'https://www.ageas.pt/particulares/apoio-ao-cliente/redes-convencionadas/oficinas-recomendadas-ageas-seguros/' },
+  { t:'Reparação automóvel', d:'Rede convencionada Ageas', u:'https://www.ageas.pt/particulares/apoio-ao-cliente/redes-convencionadas/oficinas-recomendadas-ageas-seguros/#reparacaoautomovel' },
+  { t:'Reparação de vidros', d:'Rede convencionada Ageas', u:'https://www.ageas.pt/particulares/apoio-ao-cliente/redes-convencionadas/oficinas-recomendadas-ageas-seguros/#reparacaodevidros' },
+  { t:'Site da mediação', d:'Mediação Edgar Azevedo Seguros', u:'' }
+];
+// Exemplos: só na demonstração (a clientes reais nunca se mostram notícias inventadas)
+const INFO_EXEMPLO = [
+  { tipo:'mediacao', titulo:'Escritório aberto em horário alargado', texto:'Atendimento presencial, por telefone e digital em Portugal Continental e Ilhas.', data:'2026-11-18' },
+  { tipo:'mediacao', titulo:'Reveja as coberturas antes do inverno', texto:'Tempestades e inundações: confirme com o seu gestor se a sua casa está bem protegida.', data:'2026-11-04' },
+  { tipo:'ageas', titulo:'Novidades Ageas Seguros', texto:'Consulte as últimas notícias e campanhas no site oficial.', link:'https://www.ageas.pt', data:'2026-11-10' }
+];
+function infoItem(n){
+  const d = n.data ? new Date(n.data).toLocaleDateString('pt-PT',{day:'numeric',month:'short'}) : '';
+  const E = (typeof esc==='function') ? esc : (x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])));
+  const link = /^https:\/\/[^\s"'<>]+$/i.test(String(n.link||'')) ? n.link : '';   // só links https
+  const inner = '<div class="in-t"><b>'+E(n.titulo||'')+'</b>'+(d?'<span>'+E(d)+'</span>':'')+'</div>'+(n.texto?'<p>'+E(n.texto)+'</p>':'');
+  return link ? '<a class="in-item" href="'+E(link)+'" target="_blank" rel="noopener">'+inner+'</a>' : '<div class="in-item">'+inner+'</div>';
+}
+async function renderInfo(){
+  const demo = document.body.classList.contains('is-demo') || !!(window.EXA && window.EXA.S && window.EXA.S().demo);
+  let rows = null;
+  if(demo) rows = INFO_EXEMPLO;
+  else if(window.EXASupabase && window.EXASupabase.novidades){ try{ rows = await window.EXASupabase.novidades(); }catch(e){ rows = null; } }
+  rows = rows || [];
+  const nov = rows.filter(r=>(r.tipo||'mediacao')!=='ageas'), ag = rows.filter(r=>r.tipo==='ageas');
+  const N=document.getElementById('info-nov'), A=document.getElementById('info-ageas'), L=document.getElementById('info-links');
+  if(N) N.innerHTML = nov.length ? nov.map(infoItem).join('') : '<p class="in-empty">Sem novidades de momento.</p>';
+  if(A) A.innerHTML = ag.length ? ag.map(infoItem).join('') : '<p class="in-empty">Sem notícias de momento.</p>';
+  if(L) L.innerHTML = EXA_LINKS.filter(l=>l.u).map(l=>'<a class="in-link" href="'+l.u+'" target="_blank" rel="noopener"><div><b>'+l.t+'</b><span>'+l.d+'</span></div><em>↗</em></a>').join('');
+}
+document.addEventListener('click',e=>{ if(e.target.closest('[data-sheet="sh-info"]')) renderInfo(); },true);
+
 function bcDemoCodigo(){ return window.EXA_DEMO_CODIGO || '101010.EA'; }
 function bcDemoLink(){ return location.origin + location.pathname.replace(/index\.html$/,'') + '?demo=' + encodeURIComponent(bcDemoCodigo()); }
 function bcDemoText(){ return '\n\n📱 Experimente a app EXA Seguros, com dados de exemplo:\n'+bcDemoLink()+'\nCódigo de demonstração: '+bcDemoCodigo(); }
 function bcText(){ return bcTextoCartao() + bcDemoText(); }
-function bcTextoCartao(){ return 'Edgar Azevedo · Mediação Edgar Azevedo Seguros\nAgeas Seguros · Rede Private\n\nTelefone/WhatsApp: +351 913 042 770\nEmail: edgar.azevedo@private.ageas.pt\n\nProteção pessoal, familiar, patrimonial, profissional e empresarial. Porto e Lisboa, presencial, por telefone e digital.'; }
-function bcVcf(){ return ['BEGIN:VCARD','VERSION:3.0','N:Azevedo;Edgar;;;','FN:Edgar Azevedo','ORG:Mediação Edgar Azevedo Seguros · Ageas Seguros','TITLE:Mediador de Seguros · Rede Private','TEL;TYPE=CELL:+351913042770','NOTE:App EXA Seguros (demonstração): '+bcDemoLink()+' · Código '+bcDemoCodigo(),'EMAIL;TYPE=WORK:edgar.azevedo@private.ageas.pt','URL:https://wa.me/351913042770','END:VCARD'].join('\r\n'); }
+function bcTextoCartao(){ return 'Edgar Azevedo\nDiretor da Mediação Edgar Azevedo Seguros\nAgente Exclusivo Ageas · Rede Private\n\nTelefone/WhatsApp: +351 913 042 770\nEmail: edgar.azevedo@private.ageas.pt\n\nProteção pessoal, familiar, patrimonial, profissional e empresarial. Porto e Lisboa, presencial, por telefone e digital.'; }
+function bcVcf(){ return ['BEGIN:VCARD','VERSION:3.0','N:Azevedo;Edgar;;;','FN:Edgar Azevedo','ORG:Mediação Edgar Azevedo Seguros · Ageas Seguros','TITLE:Diretor da Mediação Edgar Azevedo Seguros','TEL;TYPE=CELL:+351913042770','NOTE:App EXA Seguros (demonstração): '+bcDemoLink()+' · Código '+bcDemoCodigo(),'EMAIL;TYPE=WORK:edgar.azevedo@private.ageas.pt','URL:https://wa.me/351913042770','END:VCARD'].join('\r\n'); }
 document.addEventListener('click', e=>{
   const f=e.target.closest('[data-bc-flip]'); if(f){ f.classList.toggle('flip'); return; }
   const t=e.target.closest('[data-act^="bc-"]'); if(!t) return;
