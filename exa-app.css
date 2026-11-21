@@ -2390,3 +2390,8 @@ body.splash-side{background-size:100% 100%,100% 100%,cover,100% 100% !important;
 .prot-strip em{font-size:13px !important;}
 .wallet-stack .pol .meta{font-size:12px !important;}
 .wallet-stack .pol .row .stat{font-size:12px !important;}
+
+/* ===== Design azevedo_seg_19: linha do gestor ===== */
+.wl-meta .wl-g{display:flex;flex-direction:column;line-height:1.25;flex-shrink:1;min-width:0;}
+.wl-meta .wl-g small{font-size:11.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
+.wl-meta .wl-count{display:none;}
