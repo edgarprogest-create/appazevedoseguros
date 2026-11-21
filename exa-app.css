@@ -2300,3 +2300,5 @@ body.splash-side{background-size:100% 100%,100% 100%,cover,100% 100% !important;
 .wl-meta .wl-g{flex-shrink:0;overflow:visible;}
 .wl-meta .wl-g b{font-weight:600;color:var(--ink);}
 .wl-meta .wx{flex-shrink:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+
+#s-login.active.lg-done{animation:none;}

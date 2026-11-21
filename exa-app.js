@@ -71,7 +71,7 @@ function nav(id, opts){
   onEnter(id);
 }
 function showScreen(id, isBack){
-  $$('.screen').forEach(s => { s.classList.remove('active','back'); });
+  document.querySelectorAll('.screen').forEach(s => { s.classList.remove('active','back','lg-done'); });
   const el = document.getElementById('s-'+id);
   if(el){ el.classList.add('active'); el.scrollTop = 0; }
   // status bar theme
@@ -2341,7 +2341,7 @@ document.addEventListener('click',function(e){
     lg.classList.add('lg-enter');
     b.dataset.goOk='1'; b.click();
     setTimeout(()=>{ sc.classList.remove('go'); b.classList.remove('hit'); },300);
-    setTimeout(()=>lg.classList.remove('lg-enter'),1300);
+    setTimeout(()=>{ lg.classList.add('lg-done'); lg.classList.remove('lg-enter'); },1300);
   },980);
 },true);
 
