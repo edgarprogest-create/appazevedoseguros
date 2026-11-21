@@ -482,7 +482,7 @@ function renderNotifs(){
     }
     if(it.kind!=='renov'){
       const isRedeem = it.kind==='redeem';
-      return '<div style="padding:12px;border:1px solid '+(isRedeem?'rgba(255,95,46,0.3)':'var(--line)')+';border-radius:14px;background:'+(isRedeem?'#FFF3EE':'#fff')+';">'
+      return '<div style="padding:12px;border:1px solid '+(isRedeem?'rgba(63,43,95,0.3)':'var(--line)')+';border-radius:14px;background:'+(isRedeem?'#F5F2F9':'#fff')+';">'
         +'<div style="display:flex;align-items:center;gap:12px;">'
         +'<div style="width:36px;height:36px;border-radius:10px;background:'+(isRedeem?'var(--accent)':'#0EA25F')+';flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;">'+(isRedeem?'€':'+')+'</div>'
         +'<div style="flex:1;min-width:0;">'
@@ -1724,7 +1724,7 @@ function transferSend(){
 }
 
 /* ---------- TEMA ---------- */
-const THEME_HEX = { coral:'#FF5F2E', indigo:'#1E2752', emerald:'#0D6E58', plum:'#5E2A6E', ink:'#0A0A0B' };
+const THEME_HEX = { coral:'#3F2B5F', indigo:'#1E2752', emerald:'#0D6E58', plum:'#FF5F2E', ink:'#0A0A0B' };
 function applyTheme(){
   const t = S.theme || 'coral';
   if(t==='coral') document.body.removeAttribute('data-theme');
