@@ -2354,3 +2354,25 @@ body.splash-side{background-size:100% 100%,100% 100%,cover,100% 100% !important;
 .ia-call.ia-medis b{font-size:17px;}
 .ia-list b{color:var(--ink);font-weight:600;}
 .ia-list li+li{margin-top:4px;}
+
+/* ===== Design azevedo_seg_18 ===== */
+/* botão contacto no topo */
+.wl-right{gap:6px;}
+.wl-right .ct-btn-h{background:#25D366;border-color:#25D366;color:#fff;}
+@media (max-width:380px){.wl-right .info-btn,.wl-row .bell-btn{width:38px;height:38px;}}
+.ct-me{display:flex;align-items:center;gap:12px;margin:4px 0 16px;}
+.ct-me .gestor-foto{width:52px;height:52px;border-radius:50%;object-fit:cover;flex-shrink:0;}
+.ct-me b{display:block;font-family:var(--display);font-size:17px;font-weight:700;}
+.ct-me span{display:block;font-size:12px;color:var(--ink-2);margin-top:2px;}
+.ct-acts{display:flex;flex-direction:column;gap:10px;}
+.ct-btn{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:16px;text-decoration:none;min-height:60px;}
+.ct-btn span{display:flex;flex-direction:column;}
+.ct-btn b{font-size:15px;font-weight:700;}
+.ct-btn small{font-size:12px;opacity:.85;margin-top:2px;}
+.ct-wa{background:#25D366;color:#fff;}
+.ct-tel{background:#fff;color:var(--ink);border:1px solid var(--line);}
+.wl-meta{justify-content:space-between;}
+.wl-count{flex:1;text-align:center;font-size:11.5px;font-weight:600;color:var(--ink);white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:6px;}
+.wl-count:not(:empty)::before{content:"";width:6px;height:6px;border-radius:50%;background:#22C55E;}
+.wl-inv{margin-left:0;}
+.wl-right .info-btn:not(.ct-btn-h){background:#3F2B5F;border-color:#3F2B5F;color:#fff;}

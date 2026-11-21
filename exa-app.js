@@ -568,6 +568,7 @@ function updateGreeting(){
   const activeCount = (S.policies[walletTab]||[]).filter(pl=>!/cancel|anula/i.test(pl.situacao||'')).length;
   const tail = $('#greet-tail');
   if(tail) tail.textContent = activeCount>0 ? 'A sua proteção está em ordem.' : 'Bem-vind'+(S.account.gender==='F'?'a':'o')+' à sua wallet.';
+  { const wc=document.getElementById('wl-count'); if(wc) wc.textContent = activeCount>0 ? activeCount+(activeCount===1?' apólice ativa':' apólices ativas') : ''; }
   const dayIdx = new Date().getDay();
   const masc = (dayIdx===0 || dayIdx===6);
   const foot = $('#weekday-greeting');
@@ -2293,7 +2294,6 @@ async function renderInfo(){
   const demo = document.body.classList.contains('is-demo') || !!(window.EXA && window.EXA.S && window.EXA.S().demo);
   let rows = null;
   if(demo) rows = INFO_EXEMPLO;
-  else if(window.EXASupabase && window.EXASupabase.novidades){ try{ rows = await window.EXASupabase.novidades(); }catch(e){ rows = null; } }
   rows = rows || [];
   const nov = rows.filter(r=>(r.tipo||'mediacao')!=='ageas'), ag = rows.filter(r=>r.tipo==='ageas');
   const N=document.getElementById('info-nov'), A=document.getElementById('info-ageas'), L=document.getElementById('info-links');
