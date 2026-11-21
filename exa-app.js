@@ -635,6 +635,7 @@ function entrarLivre(tipo, od){
 }
 window.entrarLivre = entrarLivre;
 const DEMO_CODIGO = '101010.EA';
+window.EXA_DEMO_CODIGO = DEMO_CODIGO;   // usado pelo cartão de visita
 const DEMO_ORDENS = {
   '202020.OM':  { k:'medicos',       nome:['Ana','Ribeiro'],  prof:'Médica' },
   '202021.OMD': { k:'dentistas',     nome:['Rui','Matos'],    prof:'Médico Dentista' },
@@ -2264,8 +2265,13 @@ try{ if(!localStorage.getItem('exa_checkup_reset1')){ localStorage.removeItem('e
 
 document.addEventListener('click', e=>{ const t=e.target.closest('[data-cq]'); if(!t) return; const ta=$('#cond-texto'); if(ta && !t.classList.contains('on')){ ta.value=(ta.value.trim()?ta.value.trim()+'\n':'')+t.textContent; } t.classList.add('on'); });
 
-function bcText(){ return 'Edgar Azevedo · Mediação Edgar Azevedo Seguros\nAgeas Seguros · Rede Private\n\nTelefone/WhatsApp: +351 913 042 770\nEmail: edgar.azevedo@private.ageas.pt\n\nProteção pessoal, familiar, patrimonial, profissional e empresarial. Porto e Lisboa, presencial, por telefone e digital.'; }
-function bcVcf(){ return ['BEGIN:VCARD','VERSION:3.0','N:Azevedo;Edgar;;;','FN:Edgar Azevedo','ORG:Mediação Edgar Azevedo Seguros · Ageas Seguros','TITLE:Mediador de Seguros · Rede Private','TEL;TYPE=CELL:+351913042770','EMAIL;TYPE=WORK:edgar.azevedo@private.ageas.pt','URL:https://wa.me/351913042770','END:VCARD'].join('\r\n'); }
+/* Demonstração partilhada com o cartão de visita: link que abre a app já em modo demo + código */
+function bcDemoCodigo(){ return window.EXA_DEMO_CODIGO || '101010.EA'; }
+function bcDemoLink(){ return location.origin + location.pathname.replace(/index\.html$/,'') + '?demo=' + encodeURIComponent(bcDemoCodigo()); }
+function bcDemoText(){ return '\n\n📱 Experimente a app EXA Seguros, com dados de exemplo:\n'+bcDemoLink()+'\nCódigo de demonstração: '+bcDemoCodigo(); }
+function bcText(){ return bcTextoCartao() + bcDemoText(); }
+function bcTextoCartao(){ return 'Edgar Azevedo · Mediação Edgar Azevedo Seguros\nAgeas Seguros · Rede Private\n\nTelefone/WhatsApp: +351 913 042 770\nEmail: edgar.azevedo@private.ageas.pt\n\nProteção pessoal, familiar, patrimonial, profissional e empresarial. Porto e Lisboa, presencial, por telefone e digital.'; }
+function bcVcf(){ return ['BEGIN:VCARD','VERSION:3.0','N:Azevedo;Edgar;;;','FN:Edgar Azevedo','ORG:Mediação Edgar Azevedo Seguros · Ageas Seguros','TITLE:Mediador de Seguros · Rede Private','TEL;TYPE=CELL:+351913042770','NOTE:App EXA Seguros (demonstração): '+bcDemoLink()+' · Código '+bcDemoCodigo(),'EMAIL;TYPE=WORK:edgar.azevedo@private.ageas.pt','URL:https://wa.me/351913042770','END:VCARD'].join('\r\n'); }
 document.addEventListener('click', e=>{
   const f=e.target.closest('[data-bc-flip]'); if(f){ f.classList.toggle('flip'); return; }
   const t=e.target.closest('[data-act^="bc-"]'); if(!t) return;
