@@ -2376,3 +2376,44 @@ body.splash-side{background-size:100% 100%,100% 100%,cover,100% 100% !important;
 .wl-count:not(:empty)::before{content:"";width:6px;height:6px;border-radius:50%;background:#22C55E;}
 .wl-inv{margin-left:0;}
 .wl-right .info-btn:not(.ct-btn-h){background:#3F2B5F;border-color:#3F2B5F;color:#fff;}
+
+/* ===== Acessibilidade: toque (≥48dp) e leitura (≥13sp) — revisão 21/11/2026 ===== */
+/* Topo: saudação com a largura toda; botões numa linha própria, grandes e separados */
+.wl-a11y .wl-row{align-items:flex-start;gap:14px;}
+#s-home .wl-a11y .wl-row .gestor-foto{width:56px !important;height:56px !important;}
+.wl-a11y .wl-txt{flex:1;min-width:0;}
+.wl-a11y .wl-greet{font-size:23px;line-height:1.2;white-space:normal;}
+.wl-a11y .wl-sub{display:block;font-size:15px;margin-top:4px;color:var(--ink-2);}
+.wl-a11y .wl-sub #greet-tail{white-space:normal;}
+.wl-a11y .wl-g2{display:flex;flex-wrap:wrap;align-items:center;gap:2px 10px;margin-top:6px;}
+.wl-a11y .wl-g2 .wl-g{font-size:14px;color:var(--ink-2);white-space:nowrap;}
+.wl-a11y .wl-g2 .wl-g b{color:var(--ink);font-weight:600;}
+.wl-a11y .wl-g2 .wl-count{flex:0 0 auto;font-size:14px;font-weight:600;justify-content:flex-start;}
+.wl-a11y .wl-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line);}
+.wl-a11y .wl-right{display:flex;align-items:center;gap:14px;}
+.wl-a11y .wl-right button{position:relative;width:50px !important;height:50px !important;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;}
+.wl-a11y .wl-right button::after{content:"";position:absolute;inset:-5px;border-radius:50%;}   /* área de toque 60px */
+.wl-a11y .wl-right svg{width:22px;height:22px;}
+.wl-a11y .wl-right .info-btn:not(.ct-btn-h){font-size:21px;}
+.wl-a11y .wl-right .bell-btn{background:#fff;border:1px solid var(--line);color:var(--ink);}
+.wl-a11y #bell-count{position:absolute;top:-6px;right:-6px;min-width:24px;height:24px;padding:0 6px;border-radius:999px;background:#D92B2B;color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;line-height:1;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.18);z-index:1;}
+.wl-a11y .wl-inv{height:50px;padding:0 18px;font-size:15px;gap:8px;}
+/* Textos secundários */
+.prot-strip span{font-size:13px !important;}
+.prot-strip b{font-size:16px !important;}
+.prot-strip em{font-size:14px !important;}
+.wallet-stack .pol .lbl{font-size:13px !important;}
+.wallet-stack .pol .meta{font-size:13px !important;}
+.wallet-stack .pol .row .stat{font-size:13px !important;}
+/* Pilha de cartões: faixas mais baixas para se ver mais conteúdo sem deslizar */
+.wallet-stack:not(.fan) > .pol + .pol{margin-top:-86px !important;}
+.wallet-stack:not(.fan) > .pol:has(+ .pol) .pol-pro{display:none;}
+/* compensar a altura do topo */
+#s-home .wl-brand{height:54px !important;}
+#s-home .wl-brand-pad{padding-bottom:0;}
+.wl-a11y{padding-top:14px !important;}
+.wl-a11y .wl-meta{margin-top:12px;padding-top:12px;}
+.wallet-stack:not(.fan) > .pol + .pol{margin-top:-92px !important;}
+/* faixas: título inteiro; nos cartões tapados só a 1.ª linha do lado direito (n.º + seguradora) */
+.wallet-stack:not(.fan) > .pol + .pol{margin-top:-80px !important;}
+.wallet-stack:not(.fan) > .pol:has(+ .pol) .meta > *:not(:first-child){display:none !important;}

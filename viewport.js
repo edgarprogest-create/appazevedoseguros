@@ -1,6 +1,6 @@
 /* EXA Seguros — corre antes de tudo (carregado no <head>)
    1) Proteção: a app não pode ser mostrada dentro de outra página (evita sites falsos/clickjacking)
-   2) Telemóveis estreitos: desenhar a 440px e encolher, como no Claude Design */
+   2) Telemóveis estreitos: desenhar a 412px e encolher, como no Claude Design */
 (function(){
   if (window.top !== window.self) {
     try { window.top.location.replace(window.self.location.href); }
@@ -12,7 +12,7 @@
 (function(){
   var m=document.querySelector('meta[name="viewport"]'); if(!m) return;
   var NORMAL='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
-  var ALVO=440;
+  var ALVO=412;
   function ajustar(){
     m.setAttribute('content', NORMAL);
     var w=document.documentElement.clientWidth || window.innerWidth || 0;
