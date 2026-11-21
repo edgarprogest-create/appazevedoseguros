@@ -2226,7 +2226,6 @@ body.splash-side{background-size:100% 100%,100% 100%,cover,100% 100% !important;
 /* Cartões empilhados: o nome fica numa linha (com "…"), para não ser tapado pelo cartão seguinte */
 .wallet-stack:not(.fan) > .pol:has(+ .pol) .top > div:first-child{min-width:0;flex:1;}
 .wallet-stack:not(.fan) > .pol:has(+ .pol) .ttl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.wallet-stack:not(.fan) > .pol:has(+ .pol) .top .meta{flex-shrink:0;}
 .wallet-widgets .dg-mini{width:50px;height:50px;}
 .wallet-widgets .dg-mini b{font-size:12px;}
 .wallet-widgets .dg-wgt-t b{hyphens:manual;}

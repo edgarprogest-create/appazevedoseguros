@@ -3,6 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<script>
+/* Telemóveis estreitos (ou com zoom/letra aumentados): desenhar a app com 480px de largura
+   e encolher para caber no ecrã, como no Claude Design. Ecrãs largos ficam iguais. */
+(function(){
+  var m=document.querySelector('meta[name="viewport"]'); if(!m) return;
+  var NORMAL='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
+  var ALVO=480;
+  function ajustar(){
+    m.setAttribute('content', NORMAL);
+    var w=document.documentElement.clientWidth || window.innerWidth || 0;
+    if(w && w < ALVO) m.setAttribute('content', 'width='+ALVO+', user-scalable=no, viewport-fit=cover');
+  }
+  ajustar();
+  window.addEventListener('orientationchange', function(){ setTimeout(ajustar, 350); });
+})();
+</script>
 <title>EXA Seguros — App</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#EDEAE3">
@@ -16,7 +32,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Bad+Script&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="exa-app.css?v=20261121d">
+<link rel="stylesheet" href="exa-app.css?v=20261121e">
 <script src="image-slot.js"></script>
 <script src="supabase-js-2.119.2.js"></script>
 <template id="__bundler_thumbnail" data-bg-color="#3F2B5F">
