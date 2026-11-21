@@ -13,10 +13,10 @@ const CONTACTO = "mailto:edgar.azevedo@private.ageas.pt";
 const MESES_FRAC: Record<string, number> = { mensal: 1, trimestral: 3, semestral: 6, anual: 12 };
 const N_FRAC: Record<string, number> = { mensal: 12, trimestral: 4, semestral: 2, anual: 1 };
 const ESTACOES = [
-  { id: "gripe", meses: [9, 10, 11, 0, 1], t: "Está com gripe ou constipação?", m: "É a época de gripe. Se tiver febre, tosse ou dores no corpo, marque a sua consulta num hospital ou clínica da rede Médis perto de si. Com o seu seguro paga menos." },
-  { id: "alergias", meses: [2, 3, 4], t: "Alergias da primavera?", m: "Espirros, olhos irritados ou nariz entupido? Consulte um especialista em imunoalergologia da rede Médis perto de si." },
-  { id: "verao", meses: [5, 6, 7], t: "Proteja a pele este verão", m: "Antes das férias, faça o rastreio de sinais com um dermatologista da rede Médis. Em caso de insolação, procure o hospital Médis mais próximo." },
-  { id: "regresso", meses: [8], t: "Regresso às aulas, regresso à rotina", m: "É uma boa altura para a consulta de pediatria e oftalmologia dos mais novos na rede Médis." },
+  { id: "gripe", meses: [9, 10, 11, 0, 1], t: "Está com gripe ou constipação?", m: "É a época de gripe. Se tiver febre, tosse ou dores no corpo, marque a sua consulta num hospital ou clínica da rede Medis perto de si. Com o seu seguro paga menos." },
+  { id: "alergias", meses: [2, 3, 4], t: "Alergias da primavera?", m: "Espirros, olhos irritados ou nariz entupido? Consulte um especialista em imunoalergologia da rede Medis perto de si." },
+  { id: "verao", meses: [5, 6, 7], t: "Proteja a pele este verão", m: "Antes das férias, faça o rastreio de sinais com um dermatologista da rede Medis. Em caso de insolação, procure o hospital Medis mais próximo." },
+  { id: "regresso", meses: [8], t: "Regresso às aulas, regresso à rotina", m: "É uma boa altura para a consulta de pediatria e oftalmologia dos mais novos na rede Medis." },
 ];
 
 type Aviso = { chave: string; titulo: string; corpo: string; tag: string };

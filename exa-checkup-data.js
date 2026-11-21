@@ -82,15 +82,15 @@ window.EXA_CHECKUP = {
     { id:'saude', nome:'Saúde', cor:'#1E90FF', q:[
       { id:'seg', t:'Tem seguro de saúde?', o:[
         { v:'full', l:'Sim, com internamento e consultas', s:100 },
-        { v:'amb', l:'Sim, mas só consultas ou cartão de rede', s:50, f:{ t:'Sem cobertura de internamento: uma cirurgia no privado fica do seu lado.', rec:'Médis com internamento', c:'5.000 – 20.000 € numa cirurgia' } },
-        { v:'nao', l:'Não', s:10, f:{ t:'Sem seguro de saúde: depende dos tempos de espera do SNS ou paga o privado por inteiro.', rec:'Saúde Família (Médis)', c:'5.000 – 20.000 € numa cirurgia' } } ] },
+        { v:'amb', l:'Sim, mas só consultas ou cartão de rede', s:50, f:{ t:'Sem cobertura de internamento: uma cirurgia no privado fica do seu lado.', rec:'Medis com internamento', c:'5.000 – 20.000 € numa cirurgia' } },
+        { v:'nao', l:'Não', s:10, f:{ t:'Sem seguro de saúde: depende dos tempos de espera do SNS ou paga o privado por inteiro.', rec:'Saúde Família (Medis)', c:'5.000 – 20.000 € numa cirurgia' } } ] },
       { id:'dg', t:'Tem cobertura para doenças graves (cancro, AVC, enfarte)?', o:[
         { v:'s', l:'Sim', s:100 },
         { v:'ns', l:'Não sei', s:50, f:{ t:'Cobertura de doenças graves por confirmar.', rec:'Revisão com o seu gestor', c:'—' } },
         { v:'n', l:'Não', s:20, f:{ t:'Sem capital para doenças graves: tratamentos e perda de rendimento acumulam-se.', rec:'Ritmo Vida com doenças graves', c:'30.000 – 100.000 €' } } ] },
       { id:'fam', t:'A sua família está incluída no seguro de saúde?', o:[
         { v:'s', l:'Sim', s:100 }, { v:'na', l:'Não tenho família a cargo', s:100 },
-        { v:'n', l:'Não', s:40, f:{ t:'A família não está incluída no seguro de saúde.', rec:'Saúde Família (Médis)', c:'Consultas e urgências da família' } } ] }
+        { v:'n', l:'Não', s:40, f:{ t:'A família não está incluída no seguro de saúde.', rec:'Saúde Família (Medis)', c:'Consultas e urgências da família' } } ] }
     ]},
     { id:'auto', nome:'Automóvel', cor:'#E50914', q:[
       { id:'tem', t:'Tem viatura própria?', o:[ { v:'n', l:'Não', na:true }, { v:'s', l:'Sim' } ] },

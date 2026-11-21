@@ -355,10 +355,10 @@ function pushRenov(items){
   else if(Notification.permission==='default') Notification.requestPermission().then(r=>{ if(r==='granted') fire(); });
 }
 const SEASONS = [
-  { id:'gripe', meses:[9,10,11,0,1], est:'Outono e inverno', t:'Está com gripe ou constipação?', m:'É a época de gripe. Se tiver febre, tosse ou dores no corpo, marque a sua consulta num hospital ou clínica da rede Médis perto de si. Com o seu seguro paga menos.', cta:'Hospitais perto de si' },
-  { id:'alergias', meses:[2,3,4], est:'Primavera', t:'Alergias da primavera?', m:'Espirros, olhos irritados ou nariz entupido? Consulte um especialista em imunoalergologia da rede Médis perto de si.', cta:'Encontrar especialista' },
-  { id:'verao', meses:[5,6,7], est:'Verão', t:'Proteja a pele este verão', m:'Antes das férias, faça o rastreio de sinais com um dermatologista da rede Médis. Em caso de insolação, procure o hospital Médis mais próximo.', cta:'Encontrar dermatologista' },
-  { id:'regresso', meses:[8], est:'Regresso às aulas', t:'Regresso às aulas, regresso à rotina', m:'É uma boa altura para a consulta de pediatria e oftalmologia dos mais novos na rede Médis.', cta:'Encontrar médico' }
+  { id:'gripe', meses:[9,10,11,0,1], est:'Outono e inverno', t:'Está com gripe ou constipação?', m:'É a época de gripe. Se tiver febre, tosse ou dores no corpo, marque a sua consulta num hospital ou clínica da rede Medis perto de si. Com o seu seguro paga menos.', cta:'Hospitais perto de si' },
+  { id:'alergias', meses:[2,3,4], est:'Primavera', t:'Alergias da primavera?', m:'Espirros, olhos irritados ou nariz entupido? Consulte um especialista em imunoalergologia da rede Medis perto de si.', cta:'Encontrar especialista' },
+  { id:'verao', meses:[5,6,7], est:'Verão', t:'Proteja a pele este verão', m:'Antes das férias, faça o rastreio de sinais com um dermatologista da rede Medis. Em caso de insolação, procure o hospital Medis mais próximo.', cta:'Encontrar dermatologista' },
+  { id:'regresso', meses:[8], est:'Regresso às aulas', t:'Regresso às aulas, regresso à rotina', m:'É uma boa altura para a consulta de pediatria e oftalmologia dos mais novos na rede Medis.', cta:'Encontrar médico' }
 ];
 function seasonNow(){ const m=new Date().getMonth(); return SEASONS.find(s=>s.meses.includes(m)); }
 function seasonItems(arr){
@@ -1061,7 +1061,7 @@ function policyCardHTML(pl){
     '<div class="top"><div>'+
       '<div class="lbl" style="color:rgba(255,255,255,0.75);">'+esc(pl.ramo)+'</div>'+
       '<div class="ttl">'+esc(pl.nome)+'</div>'+(pl.color==='pro'?'<div class="pol-pro">'+esc((protOf(pl)||{}).etiqueta||'Cliente protocolo')+'</div>':'')+
-    '</div><div class="meta" style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><div style="display:flex;align-items:center;gap:8px;"><span>'+esc(pl.num)+'</span><span class="pol-logo '+sg+'"><img src="'+(sg==='medis'?'logo-medis.png':'logo-ageas-white.png')+'" alt="'+(sg==='medis'?'Médis':'Ageas Seguros')+'"></span></div>'+(pl.irs?'<div style="opacity:0.8;">Dedutível no '+(walletTab==='empresa'?'IRC':'IRS')+'</div>':'')+'</div></div>'+
+    '</div><div class="meta" style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><div style="display:flex;align-items:center;gap:8px;"><span>'+esc(pl.num)+'</span><span class="pol-logo '+sg+'"><img src="'+(sg==='medis'?'logo-medis.png':'logo-ageas-white.png')+'" alt="'+(sg==='medis'?'Medis':'Ageas Seguros')+'"></span></div>'+(pl.irs?'<div style="opacity:0.8;">Dedutível no '+(walletTab==='empresa'?'IRC':'IRS')+'</div>':'')+'</div></div>'+
     '<div class="row"><div class="price">'+esc(pl.premio)+'<small>/'+esc(pl.per)+'</small></div>'+
     '<div class="stat"><span class="d"></span>'+(function(){ const pi=protecaoInfo(pl); return pi ? 'Protegido há '+String(pi.dias).replace(/\B(?=(\d{3})+(?!\d))/g,'.')+' dias' : 'Activa'; })()+'</div></div>'+
   '</div>';
@@ -1071,7 +1071,7 @@ function policyCardHTML(pl){
 const AGEAS_CATALOG = [
   // ── PARTICULAR ──
   { sec:'Automóvel', color:'coral', ramo:'Auto', audience:'particular', items:['Protec Ligeiros','Protec Duas Rodas','Seguro por Dias'] },
-  { sec:'Saúde', color:'indigo', ramo:'Saúde', audience:'particular', items:['Saúde Família','Saúde Senior','Médis Dental','Médis Light'] },
+  { sec:'Saúde', color:'indigo', ramo:'Saúde', audience:'particular', items:['Saúde Família','Saúde Senior','Medis Dental','Medis Light'] },
   { sec:'Casa', color:'emerald', ramo:'Casa', audience:'particular', items:['Casa Segura','Alojamento Local','Obras de Arte','RC Familiar'] },
   { sec:'Vida', color:'plum', ramo:'Vida', audience:'particular', items:['Ritmo Vida Família','Viva Plus','Solução Jovem','Multiplic Protecção+'] },
   { sec:'Viagem & Lazer', color:'amber', ramo:'Viagem', audience:'particular', items:['Viagem Segura','Bombordo','Pétis','Embarcações de Recreio'] },
@@ -1079,7 +1079,7 @@ const AGEAS_CATALOG = [
   { sec:'Poupança & Investimento', color:'emerald', ramo:'Poupança', audience:'particular', items:['Maximus Poupança','PPR+ 1.ª Série','PPR+ 2.ª Série','Rendimento Flexível','Invest Flex'] },
   // ── EMPRESA ──
   { sec:'Frota Automóvel', color:'coral', ramo:'Frota', audience:'empresa', items:['Protec Frota'] },
-  { sec:'Saúde Colaboradores', color:'indigo', ramo:'Saúde PME', audience:'empresa', items:['Saúde PME','Empresa Viva','AP Colectivo','Médis Empresas'] },
+  { sec:'Saúde Colaboradores', color:'indigo', ramo:'Saúde PME', audience:'empresa', items:['Saúde PME','Empresa Viva','AP Colectivo','Medis Empresas'] },
   { sec:'Responsabilidade Civil', color:'plum', ramo:'RC', audience:'empresa', items:['RC Geral','Ecosfera Ambiental','D&O','Cyber Risks'] },
   { sec:'Património Empresa', color:'emerald', ramo:'Multirriscos', audience:'empresa', items:['Multirriscos Indústria','Avaria de Máquinas','Bens em Leasing'] },
 ];
@@ -1539,7 +1539,7 @@ function renderDetail(){
   const hero = $('#detail-hero');
   hero.className = 'pol dt-card '+pl.color;
   const sgD = seguradoraDe(pl), lg = $('#detail-logo');
-  if(lg){ lg.className = 'pol-logo '+sgD; lg.innerHTML = '<img src="'+(sgD==='medis'?'logo-medis.png':'logo-ageas-white.png')+'" alt="'+(sgD==='medis'?'Médis':'Ageas Seguros')+'">'; }
+  if(lg){ lg.className = 'pol-logo '+sgD; lg.innerHTML = '<img src="'+(sgD==='medis'?'logo-medis.png':'logo-ageas-white.png')+'" alt="'+(sgD==='medis'?'Medis':'Ageas Seguros')+'">'; }
   setText('#detail-ramo', pl.ramo);
   setText('#detail-title', pl.nome);
   setText('#detail-num', pl.num);
@@ -1550,7 +1550,7 @@ function renderDetail(){
   let rows = [['Tomador', S.account.firstName+' '+S.account.lastName],['NIF', S.account.nif]];
   Object.keys(pl.extra||{}).forEach(k=> rows.push([k, pl.extra[k]]));
   rows.push(['Mediador','Edgar Azevedo']);
-  rows.push(['Seguradora', seguradoraDe(pl)==='medis' ? 'Médis · Ageas Seguros' : 'Ageas Seguros']);
+  rows.push(['Seguradora', seguradoraDe(pl)==='medis' ? 'Medis · Ageas Seguros' : 'Ageas Seguros']);
   kv.innerHTML = rows.map(r=>'<div class="kv"><span class="k">'+esc(r[0])+'</span><span class="v">'+esc(r[1])+'</span></div>').join('');
   const pb = $('#detail-prot');
   if(pb){
@@ -1565,7 +1565,7 @@ function renderDetail(){
       pb.innerHTML = (prD ? '<div class="dp-ordem">'+(prD.logo?'<img src="'+esc(prD.logo)+'" alt="">':'')+'<div><b>'+esc(prD.nome)+'</b><span>Protocolo · '+esc(pl.nome||prD.produto||'')+'</span></div><img class="dp-ordem-ag" src="logo-ageas-white.png" alt="Ageas Seguros"></div>' : '')+'<div class="dp-head"><div><div class="dp-big">'+String(pi.dias).replace(/\B(?=(\d{3})+(?!\d))/g,'.')+'</div><div class="dp-l">dias protegido desde '+fmtDateShort(pi.desde)+'</div></div></div>'
         +'<div class="dp-grid" aria-hidden="true">'+dots+'</div>'
         +'<div class="dp-leg"><span><b>'+pi.sem+'/52</b> semanas desta anuidade</span><span>Renova a '+fmtDateShort(pi.renova)+'</span></div>'
-        +(/vida/i.test(pl.ramo||'') ? '<button type="button" class="dp-corpo" data-act="corpo-open"><span>'+(pl.color==='pro'?'Ver a minha profissão protegida':'Ver a minha vida protegida')+'</span><span>→</span></button>' : '')+(/casa|habita|multirrisc|patrim/i.test(pl.ramo||'') ? '<button type="button" class="dp-corpo" data-act="corpo-open"><span>Ver a minha casa protegida</span><span>→</span></button>' : '')+(/auto|frota/i.test(pl.ramo||'') ? '<button type="button" class="dp-corpo" data-act="corpo-open"><span>Ver o meu carro protegido</span><span>→</span></button>' : '')+(seguradoraDe(pl)==='medis' ? '<button type="button" class="dp-corpo" data-act="corpo-open"><span>Ver o meu corpo protegido</span><span>→</span></button>'+'<a class="dp-rede" href="https://www.medis.pt/guia-medis/" target="_blank" rel="noopener">Consultar rede Médis — hospitais e médicos ↗</a>' : '');
+        +(/vida/i.test(pl.ramo||'') ? '<button type="button" class="dp-corpo" data-act="corpo-open"><span>'+(pl.color==='pro'?'Ver a minha profissão protegida':'Ver a minha vida protegida')+'</span><span>→</span></button>' : '')+(/casa|habita|multirrisc|patrim/i.test(pl.ramo||'') ? '<button type="button" class="dp-corpo" data-act="corpo-open"><span>Ver a minha casa protegida</span><span>→</span></button>' : '')+(/auto|frota/i.test(pl.ramo||'') ? '<button type="button" class="dp-corpo" data-act="corpo-open"><span>Ver o meu carro protegido</span><span>→</span></button>' : '')+(seguradoraDe(pl)==='medis' ? '<button type="button" class="dp-corpo" data-act="corpo-open"><span>Ver o meu corpo protegido</span><span>→</span></button>'+'<a class="dp-rede" href="https://www.medis.pt/guia-medis/" target="_blank" rel="noopener">Consultar rede Medis — hospitais e médicos ↗</a>' : '');
     }
   }
   // colour the "Participar sinistro" button to match the policy card
@@ -2187,7 +2187,7 @@ window.EXA = { nav, back, S:()=>S, reset:resetApp, notificar, renderNotifs };
 (function(){
   const car=document.getElementById('ob-car'); if(!car) return;
   const D=[
-    [['Cabeça e mente','Consultas de especialidade e psicologia'],['Olhos','Oftalmologia e exames de visão'],['Dentes','Estomatologia (rede Médis Dental)'],['Coração e pulmões','Exames de diagnóstico e análises'],['Tronco e abdómen','Internamento e cirurgia'],['Ossos e músculos','Fisioterapia e ortopedia']],
+    [['Cabeça e mente','Consultas de especialidade e psicologia'],['Olhos','Oftalmologia e exames de visão'],['Dentes','Estomatologia (rede Medis Dental)'],['Coração e pulmões','Exames de diagnóstico e análises'],['Tronco e abdómen','Internamento e cirurgia'],['Ossos e músculos','Fisioterapia e ortopedia']],
     [['Cérebro','AVC, Parkinson, Alzheimer · capital a indemnizar'],['Coração','Enfarte do Miocárdio, bypass · capital a indemnizar'],['Pulmões','Doença pulmonar terminal · capital a indemnizar'],['Rins','Insuficiência Renal · capital a indemnizar']],
     [['Quebra de vidros','Para-brisas, óculo e vidros laterais'],['Choque e colisão','Danos no seu próprio carro'],['Furto ou roubo','Do veículo ou de peças'],['Fenómenos da natureza','Tempestades, inundações, granizo'],['Responsabilidade civil','Danos que cause a terceiros'],['Assistência 24h','Reboque, desempanagem e transporte']],
     [['Incêndio, raio e explosão','Edifício e recheio'],['Fenómenos da natureza','Tempestades, inundações, sismos'],['Quebra de vidros','Janelas, espelhos e loiças'],['Responsabilidade civil','Danos a vizinhos e terceiros'],['Assistência ao lar 24h','Canalizador, eletricista, serralheiro'],['Furto ou roubo','Do recheio da habitação'],['Danos por água','Roturas e infiltrações']]
@@ -2231,7 +2231,7 @@ function mediadorShareText(){
    +'• Rever coberturas e prémios todos os anos evita pagar a mais.\n'
    +'• Mudar de mediador é recomeçar com quem não conhece o seu histórico.\n'
    +'• Antes de mudar, peça por escrito o que muda nas condições.\n\n'
-   +'A Mediação Azevedo Seguros (Edgar Azevedo, agente exclusivo Ageas) presta serviço em todo Portugal continental, presencialmente, digitalmente e por telefone.\n\n'
+   +'A Mediação Azevedo Seguros (Edgar Azevedo, agente exclusivo Ageas) presta serviço em Portugal Continental e Ilhas, presencialmente, digitalmente e por telefone.\n\n'
    +'Os nossos clientes têm acesso à nossa app e também à app da Ageas Seguros. Se acontecer outra pandemia ou outro motivo que impeça a deslocação, o serviço continua igual: digital e por telefone.\n\nContacto: 913 042 770.';
 }
 
@@ -2336,4 +2336,20 @@ document.addEventListener('click',function(e){
     setTimeout(()=>{ sc.classList.remove('go'); b.classList.remove('hit'); },300);
     setTimeout(()=>lg.classList.remove('lg-enter'),1300);
   },980);
+},true);
+
+/* ps-links-motion: toque com motion em Descobrir / Check-up / Código */
+document.addEventListener('click',function(e){
+  const b=e.target.closest('#s-splash .ps-links button'); if(!b) return;
+  if(b.dataset.goOk){ delete b.dataset.goOk; return; }
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  e.stopImmediatePropagation(); e.preventDefault();
+  const r=b.getBoundingClientRect(), rip=document.createElement('span'); rip.className='rip';
+  rip.style.left=(e.clientX? e.clientX-r.left : r.width/2)+'px'; rip.style.top=(e.clientY? e.clientY-r.top : r.height/2)+'px';
+  b.appendChild(rip); b.classList.remove('tap'); void b.offsetWidth; b.classList.add('tap');
+  setTimeout(()=>{ rip.remove(); b.classList.remove('tap'); },600);
+  setTimeout(()=>{
+    if(b.dataset.nav==='onb1'){ const o=document.getElementById('s-onb1'); if(o){ o.classList.add('ob-enter'); setTimeout(()=>o.classList.remove('ob-enter'),900); } }
+    b.dataset.goOk='1'; b.click();
+  },260);
 },true);

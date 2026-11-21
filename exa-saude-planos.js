@@ -1,4 +1,4 @@
-/* Condições Saúde Sénior (Ageas/Médis) — fonte: simulação 1-3700UB6H, 15-09-2026.
+/* Condições Saúde Sénior (Ageas/Medis) — fonte: simulação 1-3700UB6H, 15-09-2026.
    Opções: op1, op1-amb1000, op1-amb200, op2, op2-esto, op3, op3-esto, vintage, vintageplus */
 (function(){
   const NOMES = {
@@ -9,7 +9,7 @@
   };
   // v(o1,o2,o3,vin,vplus) → valor por opção base
   const v = (a,b,c,d,e) => ({ op1:a, op2:b, op3:c, vintage:d, vintageplus:e });
-  const R = '€19 (rede Médis) · €21 (CUF e Luz)';
+  const R = '€19 (rede Medis) · €21 (CUF e Luz)';
   const ZONAS = {
     todo: [
       ['Hospitalização (capital)', v('15.000€','50.000€','1.000.000€','2.500€','5.000€')],
@@ -37,7 +37,7 @@
     dentes: [
       ['Capital de estomatologia', v(null,'esto250','esto1000',null,null)],
       ['Comparticipação', v(null,'esto:100% na rede · 35% fora','esto:100% na rede · 35% fora',null,null)],
-      ['Actos médicos', v(null,'esto:€15 por acto (€10 em Clínica Médis)','esto:€15 por acto (€10 em Clínica Médis)',null,null)],
+      ['Actos médicos', v(null,'esto:€15 por acto (€10 em Clínica Medis)','esto:€15 por acto (€10 em Clínica Medis)',null,null)],
       ['Aparelhos e próteses', v(null,'esto:50%','esto:50%',null,null)],
       ['Período de carência', v(null,'esto:60 dias','esto:60 dias',null,null)]
     ],
@@ -52,7 +52,7 @@
     ],
     tronco: [
       ['Capital de hospitalização', v('15.000€','50.000€','1.000.000€','2.500€','5.000€')],
-      ['Copagamento (rede Médis)', v('10% · mín. €250 · máx. €500','10% · mín. €250 · máx. €500','10% · mín. €250 · máx. €500','50%','50%')],
+      ['Copagamento (rede Medis)', v('10% · mín. €250 · máx. €500','10% · mín. €250 · máx. €500','10% · mín. €250 · máx. €500','50%','50%')],
       ['Copagamento (CUF e Luz)', v('10% · mín. €400 · máx. €600','10% · mín. €400 · máx. €600','10% · mín. €400 · máx. €600',null,null)],
       ['Cirurgia de ambulatório', v('20%','20%','20%',null,null)],
       ['Quimioterapia', v('10% · máx. €500','10% · máx. €500','10% · máx. €500',null,null)],

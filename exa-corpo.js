@@ -4,7 +4,7 @@
   const ZONAS = [
     { id:'cabeca',  nome:'Cabeça e mente',     cob:'Consultas de especialidade e psicologia', x:42, y:4.5 },
     { id:'olhos',   nome:'Olhos',              cob:'Oftalmologia e exames de visão',          x:55, y:7.5 },
-    { id:'dentes',  nome:'Dentes',             cob:'Estomatologia (rede Médis Dental)',       x:49.5, y:10.8 },
+    { id:'dentes',  nome:'Dentes',             cob:'Estomatologia (rede Medis Dental)',       x:49.5, y:10.8 },
     { id:'coracao', nome:'Coração e pulmões',  cob:'Exames de diagnóstico e análises',        x:57, y:23 },
     { id:'tronco',  nome:'Tronco e abdómen',   cob:'Internamento e cirurgia',                 x:50, y:34 },
     { id:'ossos',   nome:'Ossos e músculos',   cob:'Fisioterapia e ortopedia',                x:40, y:69 }
@@ -135,7 +135,7 @@
       nota = '<p class="cp-nota">Condições detalhadas na sua apólice '+(pl.nome||'')+'.</p>';
     } else {
       lista = planoHTML(op)+rowHTML('todo','Da cabeça aos pés','Todo o seu corpo está protegido pelo seu seguro de saúde',op,true)+ZONAS.map(z=>rowHTML(z.id,z.nome,z.cob,op)).join('');
-      extra = '<a class="cp-rede" href="https://www.medis.pt/guia-medis/" target="_blank" rel="noopener"><span><b>Consultar rede Médis</b><small>Hospitais, clínicas e médicos perto de si</small></span><em aria-hidden="true">↗</em></a>';
+      extra = '<a class="cp-rede" href="https://www.medis.pt/guia-medis/" target="_blank" rel="noopener"><span><b>Consultar rede Medis</b><small>Hospitais, clínicas e médicos perto de si</small></span><em aria-hidden="true">↗</em></a>';
       lock = '<div class="cp-lock"><b>Quanto mais tempo, mais protegido.</b> '+(pi?'Há '+fmt(pi.dias)+' dias que o seu seguro acompanha cada parte do seu corpo. ':'')+'Num seguro novo, os períodos de carência voltariam a contar do zero.</div>';
       nota = '<p class="cp-nota">Valores da '+(window.EXA_SAUDE?window.EXA_SAUDE.fonte:'simulação')+'. Condições detalhadas na sua apólice.</p>';
     }

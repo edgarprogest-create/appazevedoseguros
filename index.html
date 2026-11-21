@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Bad+Script&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="exa-app.css?v=20261120k">
+<link rel="stylesheet" href="exa-app.css?v=20261121b">
 <script src="image-slot.js"></script>
 <script src="supabase-js-2.119.2.js"></script>
 <template id="__bundler_thumbnail" data-bg-color="#FF5F2E">
@@ -50,7 +50,7 @@
         <div class="ps-top">
           <div class="ps-wm" role="img" aria-label="EXA Seguros"><img src="exa-logo-white.png" alt="EXA"><span>SEGUROS</span></div>
           <p class="ps-tag">A sua wallet<br>de seguros</p>
-          <p class="ps-by"><b>A sua mediação, Edgar Azevedo</b><span>Agente exclusivo</span><span class="ps-logos"><img src="logo-ageas-white.png" alt="Ageas"><img src="logo-medis.png" alt="Médis" class="ps-medis"></span></p>
+          <p class="ps-by"><b>Um acompanhamento único com a mediação<br>Edgar Azevedo Seguros <span class="ps-excl">· Exclusividade</span></b><span class="ps-logos"><img src="logo-ageas-white.png" alt="Ageas"><img src="logo-medis.png" alt="Medis" class="ps-medis"></span><span class="ps-pt">Portugal Continental e Ilhas</span></p>
         </div>
         <div class="ps-bot">
           
@@ -94,7 +94,7 @@
       <div class="screen" id="s-onb4">
         <div class="pad ob-head"><span class="ob-inno"><img src="exa-logo-coral.png" alt="EXA"><span>seguros</span></span><div class="lbl ac">04 · O seu gestor</div><h2 class="h-display ob-h">Sempre ao seu<br>lado, <em>quando<br>precisar.</em></h2><p class="body-s ob-p"><b style="color:var(--ink);">Mediação Edgar Azevedo</b>, agente exclusivo Ageas. Seguros e produtos de investimento.</p></div>
         <div class="pad" style="flex:1;display:flex;flex-direction:column;gap:10px;">
-          <div class="ob-nat"><span>Todo Portugal continental</span><span>Presencial</span><span>Digital</span><span>Telefone</span></div>
+          <div class="ob-nat"><span>Portugal Continental e Ilhas</span><span>Presencial</span><span>Digital</span><span>Telefone</span></div>
           <a class="ob-ct" href="https://wa.me/351913042770" target="_blank" rel="noopener"><span class="ob-ci ob-ci-img"><img src="ic-whatsapp.png" alt=""></span><span><b>WhatsApp</b><small>Resposta rápida</small></span></a>
           <a class="ob-ct" href="tel:+351913042770"><span class="ob-ci ob-ci-img"><img src="ic-telefone.avif" alt=""></span><span><b>Telefone</b><small>913 042 770</small></span></a>
           <a class="ob-ct" href="mailto:edgar.azevedo@private.ageas.pt"><span class="ob-ci ob-ci-img"><img src="ic-email.jpg" alt=""></span><span><b>Email</b><small>edgar.azevedo@private.ageas.pt</small></span></a>
@@ -119,7 +119,7 @@
             <div class="input-wrap"><span class="lbl">NIF</span><input class="input" id="login-email" type="text" inputmode="numeric" autocomplete="username" placeholder="o seu NIF"></div>
             <div class="input-wrap"><span class="lbl">Palavra-passe</span><input class="input" id="login-pass" type="password" autocomplete="current-password" placeholder="a sua palavra-passe"></div>
             <div class="err-msg" id="login-err"></div>
-            <div style="text-align:right;font-size:12px;margin-top:2px;"><span class="link" data-act="recuperar-pass">Esqueceu a palavra-passe?</span></div>
+            <div style="text-align:center;font-size:12px;margin-top:2px;"><span class="link" data-act="recuperar-pass">Esqueceu a palavra-passe?</span></div>
           </div>
           <button class="ps-pill lg-go" style="margin-top:22px;" data-act="login">Entrar</button>
           <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--ink-2);">Não tem conta? <span class="link" data-nav="register">Criar conta cliente</span></div>
@@ -220,7 +220,7 @@
 
         <!-- particular/empresa switch, directly above cards -->
         <div class="pad" style="padding-top:0;padding-bottom:10px;"><button type="button" id="prot-strip" class="prot-strip" data-sheet="sh-prot"></button></div>
-        <div class="pad" id="aviso-med" style="padding-top:0;padding-bottom:10px;"><div class="am-card"><button type="button" class="am-x" data-act="aviso-med-x" aria-label="Fechar">✕</button><div class="am-k">Informação importante</div><div class="am-t">Foi contactado para mudar de mediador?</div><p class="am-p">Se alguém, incluindo um balcão ou loja, lhe propuser alterar o mediador das suas apólices, não assine nada sem falar primeiro com o seu mediador <b>Edgar Azevedo</b>. Mudar de mediador pode alterar as condições e o acompanhamento que tem hoje.</p><div class="am-nat"><b>Em todo Portugal continental.</b> A Mediação Azevedo Seguros não está limitada a uma zona: presta o mesmo serviço de uma loja, presencialmente, digitalmente e por telefone.</div><button type="button" class="am-more" data-sheet="sh-mediador">Saber as diferenças entre mediadores →</button><div class="am-b"><a href="https://wa.me/351913042770?text=Ol%C3%A1%20Edgar%2C%20fui%20contactado%20para%20alterar%20o%20mediador%20das%20minhas%20ap%C3%B3lices%20e%20queria%20confirmar%20consigo." target="_blank" rel="noopener" class="w">Avisar no WhatsApp</a><a href="tel:+351913042770" class="t">Ligar</a></div></div></div>
+        <div class="pad" id="aviso-med" style="padding-top:0;padding-bottom:10px;"><div class="am-card"><button type="button" class="am-x" data-act="aviso-med-x" aria-label="Fechar">✕</button><div class="am-k">Informação importante</div><div class="am-t">Foi contactado para mudar de mediador?</div><p class="am-p">Se alguém, incluindo um balcão ou loja, lhe propuser alterar o mediador das suas apólices, não assine nada sem falar primeiro com o seu mediador <b>Edgar Azevedo</b>. Mudar de mediador pode alterar as condições e o acompanhamento que tem hoje.</p><div class="am-nat"><b>Em Portugal Continental e Ilhas.</b> A Mediação Azevedo Seguros não está limitada a uma zona: presta o mesmo serviço de uma loja, presencialmente, digitalmente e por telefone.</div><button type="button" class="am-more" data-sheet="sh-mediador">Saber as diferenças entre mediadores →</button><div class="am-b"><a href="https://wa.me/351913042770?text=Ol%C3%A1%20Edgar%2C%20fui%20contactado%20para%20alterar%20o%20mediador%20das%20minhas%20ap%C3%B3lices%20e%20queria%20confirmar%20consigo." target="_blank" rel="noopener" class="w">Avisar no WhatsApp</a><a href="tel:+351913042770" class="t">Ligar</a></div></div></div>
         <div class="pad" id="wallet-seg-wrap" style="padding-top:0;padding-bottom:6px;">
           <div class="seg">
             <div class="b on" data-walletswitch="particular">Particular</div>
@@ -456,7 +456,7 @@
             <div class="li" data-toggle="renovacao" data-on="1"><div style="flex:1;"><div class="nm">Renovações</div><div class="ds">Aviso 60 dias antes de cada apólice renovar</div></div><div class="sw"><div class="sw-th"></div></div></div>
             <div class="li" data-toggle="pagamentos" data-on="1"><div style="flex:1;"><div class="nm">Pagamentos</div><div class="ds">Aviso 3 dias antes de cada débito</div></div><div class="sw"><div class="sw-th"></div></div></div>
             <div class="li" data-toggle="checkup" data-on="1"><div style="flex:1;"><div class="nm">Check-up de saúde</div><div class="ds">Lembrete a cada 6 meses (seguro de saúde)</div></div><div class="sw"><div class="sw-th"></div></div></div>
-            <div class="li" data-toggle="sazonal" data-on="1"><div style="flex:1;"><div class="nm">Dicas de saúde da época</div><div class="ds">Gripe, alergias, verão… na rede Médis</div></div><div class="sw"><div class="sw-th"></div></div></div>
+            <div class="li" data-toggle="sazonal" data-on="1"><div style="flex:1;"><div class="nm">Dicas de saúde da época</div><div class="ds">Gripe, alergias, verão… na rede Medis</div></div><div class="sw"><div class="sw-th"></div></div></div>
           </div>
           <div id="notif-perm" style="margin-top:8px;font-size:11px;line-height:1.5;color:var(--ink-2);"></div>
         </div>
@@ -465,7 +465,7 @@
         <div class="pad" style="padding-top:8px;padding-bottom:18px;">
           <div class="lbl ac" style="margin-bottom:8px;">Segurança</div>
           <div class="sobre-app"><div class="am-k">Sobre esta app</div><p class="sa-main">A Ageas Seguros é a seguradora. A Mediação Edgar Azevedo Seguros é especializada em proteção pessoal, familiar, patrimonial, profissional e empresarial, e é quem cuida de si. Esta app é o nosso acompanhamento, no seu telemóvel, com todos os benefícios associados à Rede Private.</p><p class="sa-sub"><b>O que é a Rede Private?</b> É a rede de consultores que trabalha dentro da Ageas Seguros, onde cada consultor acompanha os seus clientes de forma autónoma. A Mediação Edgar Azevedo Seguros tem uma equipa própria de assistência para tratar cada caso seu com mais rapidez e proximidade.</p></div>
-          <div class="am-perfil"><div class="am-card"><div class="am-k">Informação importante</div><div class="am-t">Foi contactado para mudar de mediador?</div><p class="am-p">Se alguém, incluindo um balcão ou loja, lhe propuser alterar o mediador das suas apólices, não assine nada sem falar primeiro com o seu mediador <b>Edgar Azevedo</b>. Mudar de mediador pode alterar as condições e o acompanhamento que tem hoje.</p><div class="am-nat"><b>Em todo Portugal continental.</b> A Mediação Azevedo Seguros não está limitada a uma zona: presta o mesmo serviço de uma loja, presencialmente, digitalmente e por telefone.</div><button type="button" class="am-more" data-sheet="sh-mediador">Saber as diferenças entre mediadores →</button><div class="am-b"><a href="https://wa.me/351913042770?text=Ol%C3%A1%20Edgar%2C%20fui%20contactado%20para%20alterar%20o%20mediador%20das%20minhas%20ap%C3%B3lices%20e%20queria%20confirmar%20consigo." target="_blank" rel="noopener" class="w">Avisar no WhatsApp</a><a href="tel:+351913042770" class="t">Ligar</a></div></div></div>
+          <div class="am-perfil"><div class="am-card"><div class="am-k">Informação importante</div><div class="am-t">Foi contactado para mudar de mediador?</div><p class="am-p">Se alguém, incluindo um balcão ou loja, lhe propuser alterar o mediador das suas apólices, não assine nada sem falar primeiro com o seu mediador <b>Edgar Azevedo</b>. Mudar de mediador pode alterar as condições e o acompanhamento que tem hoje.</p><div class="am-nat"><b>Em Portugal Continental e Ilhas.</b> A Mediação Azevedo Seguros não está limitada a uma zona: presta o mesmo serviço de uma loja, presencialmente, digitalmente e por telefone.</div><button type="button" class="am-more" data-sheet="sh-mediador">Saber as diferenças entre mediadores →</button><div class="am-b"><a href="https://wa.me/351913042770?text=Ol%C3%A1%20Edgar%2C%20fui%20contactado%20para%20alterar%20o%20mediador%20das%20minhas%20ap%C3%B3lices%20e%20queria%20confirmar%20consigo." target="_blank" rel="noopener" class="w">Avisar no WhatsApp</a><a href="tel:+351913042770" class="t">Ligar</a></div></div></div>
           <div class="list">
             <div class="li" data-act="abrir-nova-pass" style="cursor:pointer;"><div class="nm">Alterar palavra-passe</div><span class="arr" style="font-family:var(--display);font-style:italic;color:var(--muted);">→</span></div>
             <div class="li" data-toggle="empresaTab" data-on="1"><div style="flex:1;"><div class="nm">Separador Empresa</div><div class="ds">Mostrar a wallet da empresa</div></div><div class="sw"><div class="sw-th"></div></div></div>
@@ -778,7 +778,7 @@
         <div class="handle"></div>
         <div class="ttl"><h3>Nem todos os mediadores <em>são iguais.</em></h3><button class="x" data-close="sh-mediador">✕</button></div>
         <div class="sub">O que deve saber antes de escolher ou mudar de mediador de seguros.</div>
-        <div class="md-list"><div class="md-i"><i>1</i><div><b>Acompanhamento para a vida</b><span>Um bom mediador acompanha a apólice todos os anos, não só no momento da venda.</span></div></div><div class="md-i"><i>2</i><div><b>Quem o defende num sinistro</b><span>É o mediador que acompanha o processo e defende os seus interesses junto da seguradora.</span></div></div><div class="md-i"><i>3</i><div><b>Revisão de coberturas e prémios</b><span>Rever todos os anos evita pagar a mais ou ficar com coberturas em falta.</span></div></div><div class="md-i"><i>4</i><div><b>Conhecer o seu histórico</b><span>Mudar de mediador significa recomeçar com quem não conhece a sua família, empresa e sinistros anteriores.</span></div></div><div class="md-i"><i>5</i><div><b>Âmbito de atuação</b><span>A Mediação Azevedo Seguros presta serviço em todo Portugal continental, presencialmente, digitalmente e por telefone.</span></div></div><div class="md-i"><i>6</i><div><b>Antes de mudar, pergunte</b><span>Se lhe propuserem mudar de mediador, peça por escrito o que muda nas condições e fale primeiro com o seu mediador.</span></div></div></div>
+        <div class="md-list"><div class="md-i"><i>1</i><div><b>Acompanhamento para a vida</b><span>Um bom mediador acompanha a apólice todos os anos, não só no momento da venda.</span></div></div><div class="md-i"><i>2</i><div><b>Quem o defende num sinistro</b><span>É o mediador que acompanha o processo e defende os seus interesses junto da seguradora.</span></div></div><div class="md-i"><i>3</i><div><b>Revisão de coberturas e prémios</b><span>Rever todos os anos evita pagar a mais ou ficar com coberturas em falta.</span></div></div><div class="md-i"><i>4</i><div><b>Conhecer o seu histórico</b><span>Mudar de mediador significa recomeçar com quem não conhece a sua família, empresa e sinistros anteriores.</span></div></div><div class="md-i"><i>5</i><div><b>Âmbito de atuação</b><span>A Mediação Azevedo Seguros presta serviço em Portugal Continental e Ilhas, presencialmente, digitalmente e por telefone.</span></div></div><div class="md-i"><i>6</i><div><b>Antes de mudar, pergunte</b><span>Se lhe propuserem mudar de mediador, peça por escrito o que muda nas condições e fale primeiro com o seu mediador.</span></div></div></div>
         <div class="md-cherry"><div class="md-ck">Exclusivo para clientes</div><b>Esta app é a prova.</b><p>Como cliente da Mediação Azevedo Seguros tem acesso a esta app e também à app da Ageas Seguros. É o resultado do acompanhamento contínuo que damos a quem o valoriza, por telefone ou presencialmente.</p><p>Se acontecer outra pandemia, ou qualquer motivo que o impeça de se deslocar, o nosso serviço continua igual: digital e por telefone, sempre incluídos.</p></div>
         <div class="md-share"><button class="btn accent" data-act="md-share-wa"><span>Partilhar no WhatsApp</span></button><button class="btn ghost" data-act="md-share"><span>Outras opções</span></button></div>
       </div>
@@ -1090,11 +1090,11 @@
 <script src="exa-store.js"></script>
 <script src="exa-protocolos.js?v=1793450041191"></script>
 <script src="exa-supabase.js?v=20261121a"></script>
-<script src="exa-app.js?v=20261120q"></script>
+<script src="exa-app.js?v=20261121b"></script>
 <script src="exa-objetivos.js"></script>
-<script src="exa-saude-planos.js"></script>
-<script src="exa-corpo.js?v=1793449276223"></script>
-<script src="exa-checkup-data.js?v=1793704090009"></script>
+<script src="exa-saude-planos.js?v=20261121b"></script>
+<script src="exa-corpo.js?v=20261121b"></script>
+<script src="exa-checkup-data.js?v=20261121b"></script>
 <script src="exa-diag.js?v=1793869517423"></script>
 </body>
 </html>
