@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://hbyavmpefqlwaoileduc.supabase.co wss://hbyavmpefqlwaoileduc.supabase.co https://api.open-meteo.com https://api.bigdatacloud.net https://formsubmit.co; worker-src 'self'; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<script src="viewport.js?v=3"></script>
+<script src="viewport.js?v=2"></script>
 <title>EXA Seguros — App</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#EDEAE3">
@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Bad+Script&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="exa-app.css?v=20261121m">
+<link rel="stylesheet" href="exa-app.css?v=20261121j">
 <script src="image-slot.js"></script>
 <script src="supabase-js-2.119.2.js"></script>
 <template id="__bundler_thumbnail" data-bg-color="#3F2B5F">
@@ -189,17 +189,17 @@
       <div class="screen" id="s-home">
         <div class="demo-bar"><span><b>Demonstração</b> · dados de exemplo</span><button type="button" data-nav="convidado">Quero ser cliente</button></div>
         <div class="pad wl-brand-pad"><div class="wl-brand" role="img" aria-label="EXA Seguros"><img class="wl-bg" src="splash-estrada.avif" alt=""><div class="wl-wm"><img src="exa-logo-white.png" alt="EXA"><span>SEGUROS</span></div></div></div>
-        <div class="pad wl-head wl-a11y">
+        <div class="pad wl-head">
           <div class="wl-row">
             <button type="button" class="gestor-badge" data-sheet="sh-gestor" aria-label="Gestor de conta" style="position:relative;"><img class="gestor-foto" src="gestor-foto.webp" alt="Edgar Azevedo"><span class="gestor-badge-dot"></span></button>
             <div class="wl-txt">
               <div class="wl-greet-row"><div class="wl-greet"><span class="lbl" id="greet-label">Bom dia</span>, <span id="greet-name">Sr. José</span></div></div>
-              <div class="wl-sub"><span id="greet-tail">A sua proteção está em ordem.</span></div>
-              <div class="wl-g2"><span class="wl-g"><b>Edgar Azevedo</b> · Diretor</span><span class="wl-count" id="wl-count"></span></div>
+              <div class="wl-sub"><span id="greet-tail">A sua proteção está em ordem.</span></div><div class="wl-sub-old" hidden="">A sua proteção está em ordem.</div>
             </div>
+            <div class="wl-right"><button type="button" class="info-btn ct-btn-h" data-sheet="sh-contacto" aria-label="Ligar ou WhatsApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"></path></svg></button><button type="button" class="info-btn" data-sheet="sh-info" aria-label="Informações">i</button><button type="button" class="bell-btn" data-sheet="sh-notifs" aria-label="Notificações"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg><span id="bell-count">0</span></button></div>
           </div>
           <div class="wl-meta">
-            <div class="wl-right"><button type="button" class="info-btn ct-btn-h" data-sheet="sh-contacto" aria-label="Ligar ou WhatsApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"></path></svg></button><button type="button" class="info-btn" data-sheet="sh-info" aria-label="Informações">i</button><button type="button" class="bell-btn" data-sheet="sh-notifs" aria-label="Notificações"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg><span id="bell-count">0</span></button></div>
+            <span class="wl-g"><b>Edgar Azevedo</b> · Diretor</span><span class="wl-count" id="wl-count"></span>
             <button type="button" class="wl-inv" data-nav="invest-painel"><span class="d"></span>Investimento</button>
           </div>
         </div>
