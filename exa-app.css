@@ -2230,12 +2230,6 @@ body.splash-side{background-size:100% 100%,100% 100%,cover,100% 100% !important;
 .wallet-widgets .dg-mini{width:50px;height:50px;}
 .wallet-widgets .dg-mini b{font-size:12px;}
 .wallet-widgets .dg-wgt-t b{hyphens:manual;}
-/* Cabeçalho da wallet: saudação numa linha; botão Investimento mais compacto em ecrãs estreitos */
-#s-home #greet-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-@media (max-width:380px){
-  #s-home [data-nav="invest-painel"]{padding:0 9px !important;gap:4px !important;letter-spacing:0.02em !important;font-size:9px !important;}
-  #s-home .bell-btn{width:36px !important;height:36px !important;}
-}
 /* Título dos cartões em 2 linhas: não cortar o "g"/"p" da segunda linha */
 .pol .ttl{line-height:1.12;max-height:none;padding-bottom:0.06em;}
 
@@ -2268,10 +2262,42 @@ body.splash-side{background-size:100% 100%,100% 100%,cover,100% 100% !important;
 #s-login .lg-sheet .lg-k,#s-login .lg-sheet .lg-h{text-align:center;}
 /* telemóvel: montanha mais abaixo, texto no céu */
 @media (max-width:480px){
-  #s-splash .ps-bg img{transform:translateY(27vh);}
-  #s-splash .ps-bg::after{background:linear-gradient(180deg,#7ea3b9 0,#91b2c4 27vh,rgba(145,178,196,0) 41vh);}
+  #s-splash .ps-bg img{transform:translateY(30vh);}
+  #s-splash .ps-bg::after{background:linear-gradient(180deg,#7ea3b9 0,#91b2c4 30vh,rgba(145,178,196,0) 44vh);}
 }
-@media (max-width:480px) and (max-height:760px){
-  #s-splash .ps-bg img{transform:translateY(22vh);}
-  #s-splash .ps-bg::after{background:linear-gradient(180deg,#7ea3b9 0,#91b2c4 22vh,rgba(145,178,196,0) 36vh);}
-}
+/* faixa de marca no topo da wallet */
+.wl-brand-pad{padding-top:max(14px,env(safe-area-inset-top));padding-bottom:0;}
+.wl-brand{position:relative;height:84px;border-radius:999px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#7ea3b9;box-shadow:0 10px 24px -16px rgba(20,40,60,.5);}
+.wl-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 18%;}
+.wl-brand::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,40,60,.05),rgba(20,40,60,.25));}
+.wl-wm{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.wl-wm img{height:28px;width:auto;filter:drop-shadow(0 1px 6px rgba(0,0,0,.25));}
+.wl-wm span{font-family:var(--sans);font-size:8.5px;font-weight:700;letter-spacing:.42em;margin-right:-.42em;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.3);}
+/* foto do gestor na linha do nome */
+.wl-hi{display:flex;align-items:center;gap:12px;margin-top:14px;}
+.wl-hi > div{flex:1;min-width:0;}
+#s-home .wl-hi .gestor-foto{width:52px !important;height:52px !important;}
+/* cabeçalho da wallet — limpo */
+.wl-brand{height:64px;}
+.wl-wm img{height:22px;}
+.wl-wm span{font-size:7.5px;}
+.wl-head{padding-top:18px;padding-bottom:4px;}
+.wl-row{display:flex;align-items:center;gap:12px;}
+.wl-row .gestor-badge{flex-shrink:0;}
+#s-home .wl-row .gestor-foto{width:48px !important;height:48px !important;border-radius:50%;object-fit:cover;}
+.wl-txt{flex:1;min-width:0;}
+.wl-greet{font-family:var(--display);font-size:21px;font-weight:700;letter-spacing:-0.02em;line-height:1.15;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wl-greet .lbl{all:unset;}
+.wl-sub{font-size:13px;color:var(--ink-2);margin-top:3px;}
+.wl-row .bell-btn{flex-shrink:0;position:relative;width:42px;height:42px;border-radius:50%;background:#fff;border:1px solid var(--line);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink);}
+.wl-row #bell-count{position:absolute;top:-2px;right:-2px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:var(--accent);color:#fff;font-size:9px;font-weight:700;display:none;align-items:center;justify-content:center;line-height:1;border:2px solid var(--bg);}
+.wl-meta{display:flex;align-items:center;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink-2);}
+.wl-meta .wl-g{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+.wl-meta .wx{flex-shrink:0;display:flex;align-items:center;gap:4px;font-size:11.5px;}
+.wl-meta .wx:not(:empty)::before{content:"·";margin-right:4px;color:var(--ink-2);}
+.wl-inv{margin-left:auto;flex-shrink:0;height:30px;padding:0 12px;border-radius:999px;background:#fff;border:1px solid var(--line);display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-family:var(--sans);font-size:11.5px;font-weight:600;color:var(--ink);}
+.wl-inv .d{width:6px;height:6px;border-radius:50%;background:#5E2A6E;}
+@media (max-width:380px){.wl-meta .wx{display:none;}}
+.wl-meta .wl-g{flex-shrink:0;overflow:visible;}
+.wl-meta .wl-g b{font-weight:600;color:var(--ink);}
+.wl-meta .wx{flex-shrink:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}

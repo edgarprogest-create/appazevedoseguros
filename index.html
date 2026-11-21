@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Bad+Script&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="exa-app.css?v=20261121c">
+<link rel="stylesheet" href="exa-app.css?v=20261121d">
 <script src="image-slot.js"></script>
 <script src="supabase-js-2.119.2.js"></script>
 <template id="__bundler_thumbnail" data-bg-color="#3F2B5F">
@@ -185,30 +185,21 @@
       <!-- ===== HOME / WALLET ===== -->
       <div class="screen" id="s-home">
         <div class="demo-bar"><span><b>Demonstração</b> · dados de exemplo</span><button type="button" data-nav="convidado">Quero ser cliente</button></div>
-        <div class="pad" style="padding-top:44px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
-            <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0;">
-              <button type="button" class="gestor-badge" data-sheet="sh-gestor" aria-label="Gestor de conta" style="position:relative;">
-                <img class="gestor-foto" src="gestor-foto.webp" alt="Edgar Azevedo" style="width:40px;height:40px;">
-                <span class="gestor-badge-dot"></span>
-              </button>
-              <div style="display:flex;flex-direction:column;line-height:1.2;min-width:0;">
-                <div class="lbl" id="greet-label" style="font-size:16px;color:var(--ink);letter-spacing:-0.01em;text-transform:none;font-weight:600;font-family:var(--sans);">Bom dia ☀️</div>
-                <div style="font-family:var(--sans);font-size:11px;font-weight:500;color:var(--ink-2);letter-spacing:0.02em;">Edgar Azevedo · Gestor de conta</div>
-                <div id="wx" class="wx" aria-live="polite"></div>
-              </div>
+        <div class="pad wl-brand-pad"><div class="wl-brand" role="img" aria-label="EXA Seguros"><img class="wl-bg" src="splash-estrada.avif" alt=""><div class="wl-wm"><img src="exa-logo-white.png" alt="EXA"><span>SEGUROS</span></div></div></div>
+        <div class="pad wl-head">
+          <div class="wl-row">
+            <button type="button" class="gestor-badge" data-sheet="sh-gestor" aria-label="Gestor de conta" style="position:relative;"><img class="gestor-foto" src="gestor-foto.webp" alt="Edgar Azevedo"><span class="gestor-badge-dot"></span></button>
+            <div class="wl-txt">
+              <div class="wl-greet"><span class="lbl" id="greet-label">Bom dia</span>, <span id="greet-name">Sr. José</span></div>
+              <div class="wl-sub" id="greet-tail">A sua proteção está em ordem.</div>
             </div>
-            <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
-              <button type="button" data-nav="invest-painel" style="height:32px;padding:0 12px;border-radius:999px;background:#fff;border:1px solid var(--line);display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-family:var(--mono);font-size:10px;letter-spacing:0.06em;text-transform:uppercase;font-weight:600;color:var(--ink);">
-                <span style="width:6px;height:6px;border-radius:50%;background:#5E2A6E;"></span><span class="inv-l">Produtos investimento</span><span class="inv-s">Investimento</span>
-              </button>
-              <button type="button" class="bell-btn" data-sheet="sh-notifs" aria-label="Notificações" style="position:relative;width:40px;height:40px;border-radius:50%;background:#fff;border:1px solid var(--line);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ink);"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-                <span id="bell-count" style="position:absolute;top:-2px;right:-2px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:var(--accent);color:#fff;font-family:var(--mono);font-size:9px;font-weight:700;display:none;align-items:center;justify-content:center;line-height:1;border:2px solid var(--bg);">0</span>
-              </button>
-            </div>
+            <button type="button" class="bell-btn" data-sheet="sh-notifs" aria-label="Notificações"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg><span id="bell-count">0</span></button>
           </div>
-          <div style="font-family:var(--display);font-size:24px;font-weight:700;letter-spacing:-0.03em;line-height:1.15;margin-top:14px;color:var(--ink);"><span id="greet-name">Sr. José</span><span id="greet-tail">, a sua proteção<br>está em ordem.</span></div>
+          <div class="wl-meta">
+            <span class="wl-g">Gestor <b>Edgar Azevedo</b></span>
+            <div id="wx" class="wx" aria-live="polite"></div>
+            <button type="button" class="wl-inv" data-nav="invest-painel"><span class="d"></span>Investimento</button>
+          </div>
         </div>
 
         <div class="pad" style="padding-top:0;">
@@ -1090,7 +1081,7 @@
 <script src="exa-store.js"></script>
 <script src="exa-protocolos.js?v=1793450041191"></script>
 <script src="exa-supabase.js?v=20261121a"></script>
-<script src="exa-app.js?v=20261121c"></script>
+<script src="exa-app.js?v=20261121d"></script>
 <script src="exa-objetivos.js"></script>
 <script src="exa-saude-planos.js?v=20261121b"></script>
 <script src="exa-corpo.js?v=20261121b"></script>

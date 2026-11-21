@@ -558,7 +558,7 @@ function fmtDateShort(d){
 function updateGreeting(){
   const h = new Date().getHours();
   const g = h<12 ? 'Bom dia' : h<19 ? 'Boa tarde' : 'Boa noite';
-  setText('#greet-label', g);
+  setText('#greet-label', g.replace(/\s*[☀️🌙🌤️]+/gu,''));
   if(walletTab==='empresa' && S.empresaClient && S.empresaClient.nome){
     setText('#greet-name', S.empresaClient.nome);
   } else {
@@ -567,7 +567,7 @@ function updateGreeting(){
   const day = DAYS[new Date().getDay()];
   const activeCount = (S.policies[walletTab]||[]).filter(pl=>!/cancel|anula/i.test(pl.situacao||'')).length;
   const tail = $('#greet-tail');
-  if(tail) tail.innerHTML = activeCount>0 ? ', a sua proteção<br>está em ordem.' : ',<br>bem-vind'+(S.account.gender==='F'?'a':'o')+' à sua wallet.';
+  if(tail) tail.textContent = activeCount>0 ? 'A sua proteção está em ordem.' : 'Bem-vind'+(S.account.gender==='F'?'a':'o')+' à sua wallet.';
   const dayIdx = new Date().getDay();
   const masc = (dayIdx===0 || dayIdx===6);
   const foot = $('#weekday-greeting');
