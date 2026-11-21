@@ -41,7 +41,18 @@
     if(row.extra && typeof row.extra==='object') Object.assign(e, row.extra);
     return e;
   }
+  // Catálogo de produtos (12-passo-catalogo-produtos.sql): o que falta na apólice vem do produto
+  function comCatalogo(row){
+    if(!row || !row.cat_nome) return row;
+    var r = Object.assign({}, row);
+    if(!r.ramo && r.cat_ramo) r.ramo = r.cat_ramo;
+    if((!r.coberturas || !String(r.coberturas).trim()) && r.cat_coberturas) r.coberturas = r.cat_coberturas;
+    if(!r.opcao && r.cat_opcao) r.opcao = r.cat_opcao;
+    if(r.cat_extra && typeof r.cat_extra === 'object') r.extra = Object.assign({}, r.cat_extra, (r.extra && typeof r.extra === 'object') ? r.extra : {});
+    return r;
+  }
   function mapApolice(row){
+    row = comCatalogo(row);
     var ramo = row.ramo || '';
     return {
       id: row.id,
@@ -136,7 +147,8 @@
     var cRes = await sb.from('clientes').select('*').eq('auth_id', uid).limit(1);
     if(cRes.error || !cRes.data || !cRes.data.length) return { ok:false, error:'Cliente não encontrado.' };
     var cliente = cRes.data[0];
-    var aRes = await sb.from('apolices').select('*').eq('nif_cliente', cliente.nif);
+    var aRes = await sb.from('apolices_app').select('*').eq('nif_cliente', cliente.nif);
+    if(aRes.error) aRes = await sb.from('apolices').select('*').eq('nif_cliente', cliente.nif);   // catálogo ainda não instalado
     var apolices = (aRes.data||[]).filter(activeOnly).map(mapApolice);
     var protocolo = null;
     if(cliente.protocolo){

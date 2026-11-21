@@ -21,7 +21,7 @@ Ao alterar CSS/JS, subir também o `?v=` correspondente no `index.html`.
 Projeto `hbyavmpefqlwaoileduc`. A chave em `exa-supabase.js` é a **anon key** (pública por natureza).
 A segurança está nas funções e no RLS, não na chave.
 
-Scripts corridos em produção (20/11/2026), por cima dos originais 1–3, 6 e 7 (o 10 exige antes criar a Edge Function):
+Scripts de segurança e funcionalidades, por cima dos originais 1–3, 6 e 7 (o 10 exige antes criar a Edge Function):
 - `supabase/8-passo-seguranca.sql` — RLS em `clientes`, `apolices`, `resgates`, `invest_reforcos`,
   `import_*`, `agentes`; funções por NIF só para o próprio cliente autenticado (versões originais em
   esquema `interno`, fora da API); funções do painel do agente só para quem está em `agentes`;
@@ -31,6 +31,10 @@ Scripts corridos em produção (20/11/2026), por cima dos originais 1–3, 6 e 7
 - `supabase/9-passo-invest-seguro.sql` — EXA Invest (substitui os passos 4 e 5 originais).
 - `supabase/10-passo-notificacoes-push.sql` — notificações com a app fechada (ver Notificações).
 - `supabase/11-passo-notificacoes-visitantes.sql` — notificações para quem ainda não é cliente.
+- `supabase/12-passo-catalogo-produtos.sql` — catálogo `produtos`: basta o nome do produto na apólice (ex.:
+  "Proteção Casa+") para a app saber ramo, coberturas, opção Médis e extra. Reconhecimento sem maiúsculas,
+  acentos nem pontuação, por nome ou `aliases`; ganha o nome mais comprido. A app e os avisos leem a vista
+  `apolices_app` (security_invoker, mantém o RLS); o que está na apólice tem prioridade sobre o catálogo.
 
 **Não voltar a correr os scripts originais 1 a 5** (repõem funções sem proteção). Se acontecer, correr o 8 e o 9 a seguir.
 

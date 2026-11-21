@@ -47,7 +47,9 @@ function dataOk(v: unknown): string | null { const s = txt(v); return /^\d{4}-\d
 function avisosDoCliente(apolices: Apolice[], prefs: Record<string, unknown>, hoje: string): Aviso[] {
   const on = (k: string) => prefs?.[k] !== false;
   const h = dia(hoje);
-  const ativas = apolices.filter((a) => !/cancel|anula/i.test(txt(a.situacao)));
+  const ativas = apolices
+    .filter((a) => !/cancel|anula/i.test(txt(a.situacao)))
+    .map((a) => (!txt(a.ramo) && txt(a.cat_ramo) ? { ...a, ramo: a.cat_ramo } : a));
   const out: Aviso[] = [];
 
   for (const a of ativas) {
@@ -190,7 +192,11 @@ Deno.serve(async (req) => {
 
     const hoje = typeof corpo.hoje === "string" && /^\d{4}-\d{2}-\d{2}$/.test(corpo.hoje) ? corpo.hoje : hojeLisboa();
     const nifs = [...new Set(subs.map((s) => s.nif as string))];
-    const apolices = nifs.length ? await sql`select a.nif_cliente, to_jsonb(a.*) as a from public.apolices a where a.nif_cliente = any(${nifs})` : [];
+    // com o catálogo de produtos aplicado, se existir (12-passo-catalogo-produtos.sql)
+    const [{ cat }] = await sql`select to_regclass('public.apolices_app') is not null as cat`;
+    const apolices = !nifs.length ? [] : cat
+      ? await sql`select a.nif_cliente, to_jsonb(a.*) as a from public.apolices_app a where a.nif_cliente = any(${nifs})`
+      : await sql`select a.nif_cliente, to_jsonb(a.*) as a from public.apolices a where a.nif_cliente = any(${nifs})`;
     const porNif = new Map<string, Apolice[]>();
     for (const r of apolices) {
       const lista = porNif.get(r.nif_cliente) || [];
