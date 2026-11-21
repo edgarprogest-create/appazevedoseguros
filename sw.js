@@ -1,4 +1,4 @@
-const CACHE = 'exa-seguros-v20';
+const CACHE = 'exa-seguros-v22';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {

@@ -2376,3 +2376,17 @@ body.splash-side{background-size:100% 100%,100% 100%,cover,100% 100% !important;
 .wl-count:not(:empty)::before{content:"";width:6px;height:6px;border-radius:50%;background:#22C55E;}
 .wl-inv{margin-left:0;}
 .wl-right .info-btn:not(.ct-btn-h){background:#3F2B5F;border-color:#3F2B5F;color:#fff;}
+
+/* ===== Refinamento discreto: toque e leitura, mantendo o design ===== */
+.wl-right{gap:8px !important;}
+.wl-right .info-btn,.wl-row .bell-btn{width:44px !important;height:44px !important;position:relative;}
+.wl-right .info-btn::after,.wl-row .bell-btn::after{content:"";position:absolute;inset:-5px;border-radius:50%;}  /* área de toque 54px */
+.wl-right svg{width:20px;height:20px;}
+.wl-right .info-btn:not(.ct-btn-h){font-size:19px;}
+.wl-row #bell-count{min-width:20px !important;height:20px !important;padding:0 5px !important;font-size:11px !important;top:-4px !important;right:-4px !important;border-width:2px !important;}
+.wl-meta,.wl-meta .wl-g,.wl-count{font-size:12.5px !important;}
+.prot-strip span{font-size:12px !important;}
+.prot-strip b{font-size:15px !important;}
+.prot-strip em{font-size:13px !important;}
+.wallet-stack .pol .meta{font-size:12px !important;}
+.wallet-stack .pol .row .stat{font-size:12px !important;}

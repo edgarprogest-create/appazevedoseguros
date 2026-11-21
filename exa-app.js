@@ -555,6 +555,20 @@ function fmtDateShort(d){
 }
 
 /* ---------- GREETING ---------- */
+/* Saudação: nomes longos (ex.: "Boa tarde, Enf.ª Marta") reduzem ligeiramente a letra em vez de serem cortados */
+function ajustarSaudacao(){
+  const caber = (el, minimo) => {
+    if(!el || !el.clientWidth) return;
+    el.style.fontSize = '';
+    let fs = parseFloat(getComputedStyle(el).fontSize) || 16;
+    while(el.scrollWidth > el.clientWidth && fs > minimo){ fs -= 0.5; el.style.fontSize = fs + 'px'; }
+  };
+  caber(document.querySelector('#s-home .wl-greet'), 16);
+  caber(document.getElementById('greet-tail'), 12);
+}
+window.addEventListener('resize', ()=>requestAnimationFrame(ajustarSaudacao));
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>requestAnimationFrame(ajustarSaudacao));
+if(document.fonts && document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', ()=>requestAnimationFrame(ajustarSaudacao));
 function updateGreeting(){
   const h = new Date().getHours();
   const g = h<12 ? 'Bom dia' : h<19 ? 'Boa tarde' : 'Boa noite';
@@ -569,6 +583,7 @@ function updateGreeting(){
   const tail = $('#greet-tail');
   if(tail) tail.textContent = activeCount>0 ? 'A sua proteção está em ordem.' : 'Bem-vind'+(S.account.gender==='F'?'a':'o')+' à sua wallet.';
   { const wc=document.getElementById('wl-count'); if(wc) wc.textContent = activeCount>0 ? activeCount+(activeCount===1?' apólice ativa':' apólices ativas') : ''; }
+  requestAnimationFrame(ajustarSaudacao);
   const dayIdx = new Date().getDay();
   const masc = (dayIdx===0 || dayIdx===6);
   const foot = $('#weekday-greeting');
