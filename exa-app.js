@@ -153,7 +153,7 @@ function onEnter(id){
 }
 
 /* ---------- HELPERS ---------- */
-function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function initials(){ return (S.account.firstName[0]||'')+(S.account.lastName[0]||''); }
 const PROF_TITULOS = { medicos:['Dr.','Dra.'], dentistas:['Dr.','Dra.'], veterinarios:['Dr.','Dra.'], farmaceuticos:['Dr.','Dra.'], enfermeiros:['Enf.','Enf.ª'], engenheiros:['Eng.','Eng.ª'], arquitetos:['Arq.','Arq.ª'] };
 function title(){
@@ -572,7 +572,7 @@ function updateGreeting(){
   const masc = (dayIdx===0 || dayIdx===6);
   const foot = $('#weekday-greeting');
   const footName = (walletTab==='empresa' && S.empresaClient && S.empresaClient.nome) ? S.empresaClient.nome : (title()+' '+S.account.firstName);
-  if(foot) foot.innerHTML = footName+', desejamos-lhe '+(masc?'um <b style="color:var(--ink);font-weight:600;">bom '+day+'</b>':'uma <b style="color:var(--ink);font-weight:600;">boa '+day+'</b>')+'.';
+  if(foot) foot.innerHTML = esc(footName)+', desejamos-lhe '+(masc?'um <b style="color:var(--ink);font-weight:600;">bom '+day+'</b>':'uma <b style="color:var(--ink);font-weight:600;">boa '+day+'</b>')+'.';
 }
 function setText(sel,val){ const el=$(sel); if(el) el.textContent=val; }
 
@@ -2169,6 +2169,7 @@ function init(){
   }
 }
 document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('click', e=>{ const bb=e.target.closest('#bday-banner'); if(bb) bb.classList.remove('show'); });
 document.addEventListener('DOMContentLoaded', ()=>setTimeout(convidarNotificacoes, 3500));
 // link de recuperação de palavra-passe (email do Supabase) → pedir a nova palavra-passe
 if(window.EXASupabase && window.EXASupabase.aoRecuperar) window.EXASupabase.aoRecuperar(()=>abrirNovaPass(true));

@@ -31,6 +31,7 @@ Scripts de segurança e funcionalidades, por cima dos originais 1–3, 6 e 7 (o 
 - `supabase/9-passo-invest-seguro.sql` — EXA Invest (substitui os passos 4 e 5 originais).
 - `supabase/10-passo-notificacoes-push.sql` — notificações com a app fechada (ver Notificações).
 - `supabase/11-passo-notificacoes-visitantes.sql` — notificações para quem ainda não é cliente.
+- `supabase/13-passo-seguranca-extra.sql` — catálogo `produtos` só para quem tem sessão; verificação de tabelas sem RLS.
 - `supabase/12-passo-catalogo-produtos.sql` — catálogo `produtos`: basta o nome do produto na apólice (ex.:
   "Proteção Casa+") para a app saber ramo, coberturas, opção Médis e extra. Reconhecimento sem maiúsculas,
   acentos nem pontuação, por nome ou `aliases`; ganha o nome mais comprido. A app e os avisos leem a vista
@@ -89,3 +90,13 @@ Empacotar como TWA (PWABuilder ou Bubblewrap). Colocar o `assetlinks.json` gerad
 - Painel do agente (`EXA Agente.html`) não está neste repositório: passa a precisar de login Supabase com conta em `agentes`.
 - Confirmar licença das imagens `carro-xray.webp` e `casa.webp`; valores de exemplo do Check-up e do Ritmo Vida Profissional.
 - Registos de convidados são enviados por formsubmit.co para email — referir na política de privacidade.
+
+## Segurança da app (não desfazer)
+- **CSP** no `<head>` do `index.html`: só corre JavaScript dos ficheiros do próprio site (nada inline, nem
+  `onclick=`), e a app só comunica com o Supabase, open-meteo, bigdatacloud e formsubmit. Se acrescentar
+  um serviço externo, acrescentá-lo ao `connect-src`. Código novo: em ficheiros `.js`, nunca `<script>` inline.
+- **viewport.js**: impede que a app seja mostrada dentro de outra página (clickjacking) e ajusta a largura.
+- **Dados do Supabase**: passam por `limpar()` em `exa-supabase.js` (sem `<`, `>`, aspas). Ao mostrar dados
+  com `innerHTML`, usar sempre `esc()`.
+- **Base de dados**: RLS em todas as tabelas; funções por NIF só para o próprio cliente (scripts 8–13).
+

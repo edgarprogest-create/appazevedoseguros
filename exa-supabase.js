@@ -41,6 +41,13 @@
     if(row.extra && typeof row.extra==='object') Object.assign(e, row.extra);
     return e;
   }
+  // Segurança: os textos vindos da base de dados nunca levam HTML (impede injeção de código na app)
+  function limpar(v){
+    if(typeof v === 'string') return v.replace(/[<>]/g,'').replace(/"/g,'”').replace(/`/g,'´');
+    if(Array.isArray(v)) return v.map(limpar);
+    if(v && typeof v === 'object'){ var o={}; Object.keys(v).forEach(function(k){ o[limpar(k)] = limpar(v[k]); }); return o; }
+    return v;
+  }
   // Catálogo de produtos (12-passo-catalogo-produtos.sql): o que falta na apólice vem do produto
   function comCatalogo(row){
     if(!row || !row.cat_nome) return row;
@@ -52,7 +59,7 @@
     return r;
   }
   function mapApolice(row){
-    row = comCatalogo(row);
+    row = comCatalogo(limpar(row));
     var ramo = row.ramo || '';
     return {
       id: row.id,
@@ -146,7 +153,7 @@
     var uid = uRes.data && uRes.data.user && uRes.data.user.id;
     var cRes = await sb.from('clientes').select('*').eq('auth_id', uid).limit(1);
     if(cRes.error || !cRes.data || !cRes.data.length) return { ok:false, error:'Cliente não encontrado.' };
-    var cliente = cRes.data[0];
+    var cliente = limpar(cRes.data[0]);
     var aRes = await sb.from('apolices_app').select('*').eq('nif_cliente', cliente.nif);
     if(aRes.error) aRes = await sb.from('apolices').select('*').eq('nif_cliente', cliente.nif);   // catálogo ainda não instalado
     var apolices = (aRes.data||[]).filter(activeOnly).map(mapApolice);
@@ -167,7 +174,7 @@
     var rpcRes = await sb.rpc('empresa_login', { p_nif: nif, p_email: email });
     if(rpcRes.error && semRede(rpcRes.error)) return { ok:false, error:OFFLINE_MSG };
     if(rpcRes.error || !rpcRes.data || !rpcRes.data.length) return { ok:false, error:'Empresa não encontrada ou email não corresponde.' };
-    var row = rpcRes.data[0];
+    var row = limpar(rpcRes.data[0]);
     return { ok:true, cliente:{ nif:row.nif, nome:row.nome } };
   }
 
@@ -252,7 +259,7 @@
     if(!sb) return null;
     var r = await sb.rpc('dono_do_codigo', { p_codigo: codigo });
     if(r.error || !r.data || !r.data.length) return null;
-    return r.data[0];
+    return limpar(r.data[0]);
   }
 
   async function criarConvidado(nif, nome, email, codigo, password){
@@ -279,21 +286,21 @@
     if(!sb) return { ok:false, rows:[] };
     var r = await sb.rpc('convites_do_cliente', { p_nif: String(nif).replace(/\D/g,'') });
     if(r.error) return { ok:false, rows:[] };
-    return { ok:true, rows: r.data || [] };
+    return { ok:true, rows: limpar(r.data || []) };
   }
 
   async function pontosDoCliente(nif){
     if(!sb) return null;
     var r = await sb.rpc('pontos_do_cliente', { p_nif: String(nif).replace(/\D/g,'') });
     if(r.error || !r.data || !r.data.length) return null;
-    return r.data[0];
+    return limpar(r.data[0]);
   }
 
   async function convitesTodos(){
     if(!sb) return { ok:false, rows:[] };
     var r = await sb.rpc('convites_todos');
     if(r.error) return { ok:false, rows:[] };
-    return { ok:true, rows: r.data || [] };
+    return { ok:true, rows: limpar(r.data || []) };
   }
 
   async function registarResgate(nif, loja, morada){
@@ -309,14 +316,14 @@
     if(!sb) return null;
     var r = await sb.rpc('investimento_do_cliente', { p_nif: String(nif).replace(/\D/g,'') });
     if(r.error || !r.data || !r.data.length) return null;
-    return r.data[0];
+    return limpar(r.data[0]);
   }
 
   async function investimentosDoCliente(nif){
     if(!sb) return [];
     var r = await sb.rpc('investimento_do_cliente', { p_nif: String(nif).replace(/\D/g,'') });
     if(r.error || !r.data) return [];
-    return r.data.filter(function(x){ return x && x.ativo; });
+    return limpar(r.data.filter(function(x){ return x && x.ativo; }));
   }
 
   async function pedirReforco(nif, produto, valor){
@@ -328,14 +335,14 @@
   async function reforcosDoCliente(nif){
     if(!sb) return [];
     var r = await sb.rpc('reforcos_do_cliente', { p_nif: String(nif).replace(/\D/g,'') });
-    return r.error ? [] : (r.data||[]);
+    return r.error ? [] : limpar(r.data||[]);
   }
 
   async function rentabilidade(){
     if(!sb) return null;
     var r = await sb.from('rentabilidade').select('produto,tipo,ano,valor').order('ano',{ascending:true});
     if(r.error || !r.data || !r.data.length) return null;
-    return r.data;
+    return limpar(r.data);
   }
 
   // ---------- Notificações com a app fechada (Web Push) ----------

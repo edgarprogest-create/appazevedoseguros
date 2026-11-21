@@ -3,22 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<script>
-/* Telemóveis estreitos (ou com zoom/letra aumentados): desenhar a app com 480px de largura
-   e encolher para caber no ecrã, como no Claude Design. Ecrãs largos ficam iguais. */
-(function(){
-  var m=document.querySelector('meta[name="viewport"]'); if(!m) return;
-  var NORMAL='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
-  var ALVO=480;
-  function ajustar(){
-    m.setAttribute('content', NORMAL);
-    var w=document.documentElement.clientWidth || window.innerWidth || 0;
-    if(w && w < ALVO) m.setAttribute('content', 'width='+ALVO+', user-scalable=no, viewport-fit=cover');
-  }
-  ajustar();
-  window.addEventListener('orientationchange', function(){ setTimeout(ajustar, 350); });
-})();
-</script>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://hbyavmpefqlwaoileduc.supabase.co wss://hbyavmpefqlwaoileduc.supabase.co https://api.open-meteo.com https://api.bigdatacloud.net https://formsubmit.co; worker-src 'self'; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<script src="viewport.js?v=1"></script>
 <title>EXA Seguros — App</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#EDEAE3">
@@ -1067,7 +1054,7 @@
     <div class="toast" id="toast"><span class="ck">✓</span><span id="toast-msg"></span></div>
 
     <!-- birthday banner -->
-    <div class="notif-banner" id="bday-banner" data-act="" onclick="this.classList.remove('show')">
+    <div class="notif-banner" id="bday-banner" data-act="">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
         <div style="width:22px;height:22px;border-radius:6px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:-0.04em;">EX</div>
         <span style="font-size:11px;font-weight:600;letter-spacing:0.02em;flex:1;">EXA SEGUROS</span>
@@ -1096,8 +1083,8 @@
 
 <script src="exa-store.js"></script>
 <script src="exa-protocolos.js?v=1793450041191"></script>
-<script src="exa-supabase.js?v=20261121a"></script>
-<script src="exa-app.js?v=20261121e"></script>
+<script src="exa-supabase.js?v=20261121f"></script>
+<script src="exa-app.js?v=20261121f"></script>
 <script src="exa-objetivos.js"></script>
 <script src="exa-saude-planos.js?v=20261121b"></script>
 <script src="exa-corpo.js?v=20261121b"></script>
